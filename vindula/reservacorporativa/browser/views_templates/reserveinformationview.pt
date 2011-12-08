@@ -1,0 +1,21 @@
+<div tal:define="reserve python: view.getInfoReserve(context.REQUEST.form.get('id'))">
+
+	<span tal:condition="not: reserve">Selecione um tipo de reserva.</span>
+	
+	<tal:condition condition="reserve">
+		
+		<h2 tal:content="reserve/title">Title</h2>
+		<div class="documentDescription" tal:content="reserve/description" tal:condition="reserve/description"></div>
+		<span tal:content="string: Local: ${reserve/local}" tal:condition="reserve/local"></span>
+		<span tal:content="string: Contato: ${reserve/contact}" tal:condition="reserve/contact"></span>
+		
+		<span>Hor&aacute;rios dispon&iacute;veis:</span>
+		
+		
+		<div id="available-times" tal:repeat="day reserve/hours">
+			<span tal:content="string: ${day/label} - ${day/hours}"></span>
+		</div>
+		
+	</tal:condition>	
+	
+</div>

@@ -5,13 +5,43 @@
 	  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
 	  metal:use-macro="here/main_template/macros/master" 
 	  i18n:domain="vindula.reservacorporativa">
+
+	<head>
+		<metal:js fill-slot="javascript_head_slot">
+			<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_request.js"></script>
+		</metal:js>	
+		<metal:css fill-slot="style_slot">
+			<link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/reservation_request.css" />
+		</metal:css>
+	</head>	  	
 	  	
     <body>
         <metal:main fill-slot="content">
             <metal:content-core define-macro="content-core">
-				
-				<h1>Solicita&ccedil;&atilde;o de Reservas</h1>
-			             	
+				<div id="content" class="reserves">
+					
+					<h1>Solicita&ccedil;&atilde;o de Reservas</h1>
+					<p />
+					<div tal:define="reserves view/getReserves">
+						<span tal:condition="not: reserves">Este servi&ccedil;o n&atilde;o est&aacute; dispon&iacute;vel.</span>
+						<tal:condition condition="reserves">
+						<span>Selecione o tipo de reserva:</span>
+							<select id="reserves">
+								<option></option>
+								<option tal:repeat="item reserves" tal:attributes="value item/id" tal:content="item/title">Title</option>
+							</select>
+						</tal:condition>
+					</div>
+					
+					<input id="view-info-reserve" type="hidden" tal:attributes="value string: ${context/portal_url}/reserve-information" />
+					
+					<div id="ajax-loader">Aguarde...</div>
+					
+					<div id="info-reserve">
+						<!-- Ajax: get reserve-information view -->
+					</div>
+					
+				</div>     	
             </metal:content-core>
         </metal:main>
     </body>

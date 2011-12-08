@@ -7,7 +7,7 @@
  <!-- Basic metadata -->
  <property name="title" i18n:translate="">Reserva Corporativa</property>
  <property name="description" i18n:translate="">Adiciona um tipo de reserva corporativa.</property>
- <property name="content_icon">++resource++vindula.reservacorporativa.images/reserve.png</property>
+ <property name="content_icon">++resource++vindula.reservacorporativa/reserve.png</property>
  <property name="allow_discussion">True</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
