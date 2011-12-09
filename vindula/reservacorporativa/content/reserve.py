@@ -42,12 +42,12 @@ class IReserve(form.Schema):
         description=_(u"Selecione a opção caso haja reservas disponíveis nas segundas e indique os horários de início e término."),
         )
     
-    monday_time_start = schema.Time(
+    mon_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    monday_time_end = schema.Time(
+    mon_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )
@@ -60,12 +60,12 @@ class IReserve(form.Schema):
         default=False
         )
     
-    tuesday_time_start = schema.Time(
+    tue_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    tuesday_time_end = schema.Time(
+    tue_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )
@@ -78,12 +78,12 @@ class IReserve(form.Schema):
         default=False
         )
     
-    wednesday_time_start = schema.Time(
+    wed_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    wednesday_time_end = schema.Time(
+    wed_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )
@@ -96,12 +96,12 @@ class IReserve(form.Schema):
         default=False
         )
     
-    thursday_time_start = schema.Time(
+    thu_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    thursday_time_end = schema.Time(
+    thu_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )
@@ -114,12 +114,12 @@ class IReserve(form.Schema):
         default=False
         )
     
-    friday_time_start = schema.Time(
+    fri_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    friday_time_end = schema.Time(
+    fri_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )
@@ -132,12 +132,12 @@ class IReserve(form.Schema):
         default=False
         )
     
-    saturday_time_start = schema.Time(
+    sat_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    saturday_time_end = schema.Time(
+    sat_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )
@@ -150,12 +150,12 @@ class IReserve(form.Schema):
         default=False
         )
     
-    sunday_time_start = schema.Time(
+    sun_start = schema.Time(
         title=_(u"Hora que começa"),
         required=False,
         )
     
-    sunday_time_end = schema.Time(
+    sun_end = schema.Time(
         title=_(u"Hora que termina"),
         required=False,
         )

@@ -9,21 +9,21 @@ $j(document).ready(function(){
 	 		var reserve = $j(this).val();
 			var url = $j('#view-info-reserve').val();
 			$j.get(url,{ id: reserve }, function(data){
-				$j('div#info-reserve').html(data);
+				$j('#info-reserve').html(data);
 			});
 		});
 	});
 	
 	/* AJAX LOADER */
 	
-	$j('div#info-reserve').ajaxStart(function(){  
+	$j('#info-reserve').ajaxStart(function(){  
 	   $j(this).hide();  
-	   $j('div#ajax-loader').show();
+	   $j('#ajax-loader').show();
 	});  
 	
-	$j('div#info-reserve').ajaxStop(function(){  
+	$j('#info-reserve').ajaxStop(function(){  
 	   $j(this).show();  
-	   $j('div#ajax-loader').hide();
-	}); 
-
+	   $j('#ajax-loader').hide();
+	}); 	
+	
 });

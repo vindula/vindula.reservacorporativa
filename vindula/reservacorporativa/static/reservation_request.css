@@ -1,9 +1,0 @@
-/* 
- * * * RESERVATION REQUEST * * *
- */
-
-.reserves #info-reserve { margin-top: 20px; }
-.reserves #info-reserve .documentDescription { margin-bottom: 10px; }
-.reserves #info-reserve span { display: block; }
-.reserves #ajax-loader { display: none; }
-

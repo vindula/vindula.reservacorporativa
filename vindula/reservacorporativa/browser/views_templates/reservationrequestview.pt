@@ -11,7 +11,7 @@
 			<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_request.js"></script>
 		</metal:js>	
 		<metal:css fill-slot="style_slot">
-			<link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/reservation_request.css" />
+			<link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/corporate_reserves.css" />
 		</metal:css>
 	</head>	  	
 	  	

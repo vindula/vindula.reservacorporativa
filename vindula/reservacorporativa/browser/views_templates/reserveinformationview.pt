@@ -1,3 +1,5 @@
+<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_information.js"></script>
+
 <div tal:define="reserve python: view.getInfoReserve(context.REQUEST.form.get('id'))">
 
 	<span tal:condition="not: reserve">Selecione um tipo de reserva.</span>
@@ -8,12 +10,50 @@
 		<div class="documentDescription" tal:content="reserve/description" tal:condition="reserve/description"></div>
 		<span tal:content="string: Local: ${reserve/local}" tal:condition="reserve/local"></span>
 		<span tal:content="string: Contato: ${reserve/contact}" tal:condition="reserve/contact"></span>
+		<span tal:content="string: Frequ&ecirc;nia: ${reserve/frequency}" tal:condition="reserve/frequency"></span>
 		
-		<span>Hor&aacute;rios dispon&iacute;veis:</span>
+		<!-- Available -->
+		<div id="available">
+			<span id="hours">Hor&aacute;rios dispon&iacute;veis:</span>
+			<div id="available-times">
+				<tal:repeat repeat="day reserve/hours">
+					<div id="day" tal:condition="day/hours">
+						<span tal:content="string: ${day/label}">17/12/11, segunda</span>
+						<input type="hidden" class="date" tal:attributes="value day/day"/>
+						<ul>
+							<li tal:repeat="hour day/hours">
+								<span tal:content="hour/label">09:00 as 13:00</span>
+								<input type="hidden" class="start" tal:attributes="value hour/start"/>
+								<input type="hidden" class="end" tal:attributes="value hour/end"/>
+							</li>
+						</ul>
+					</div>
+				</tal:repeat>
+			</div>
+		</div>
 		
-		
-		<div id="available-times" tal:repeat="day reserve/hours">
-			<span tal:content="string: ${day/label} - ${day/hours}"></span>
+		<!-- Scheduling -->
+		<div id="scheduling">
+			<span id="form">Preencha o formul&aacute;rio para agendar a reserva:</span>
+			<div id="scheduling-form" tal:define="memberinfo context/portal_membership/getMemberInfo; member context/@@plone_portal_state/member">
+				<form method="post" tal:attributes="action string: ${context/portal_url}/scheduling-reservation">
+					<span>Nome</span>
+					<input type="text" name="name" size="50" tal:attributes="value python:memberinfo['fullname'] or member.getId() or member.getId()" /><p />
+					<span>E-mail</span>
+					<input type="text" name="mail" size="50" /><p />
+					<span>Telefone</span>
+					<input type="text" name="phone" size="50" /><p />
+					<span>Data da reserva</span>
+					<input type="text" name="date_view" size="50" disabled="true" value="Selecione a data na lista de hor&aacute;rios dispon&iacute;veis" /><p />
+					<span>Observa&ccedil;&otilde;es</span>
+					<textarea name="text" cols="10" rows="3" /><p />
+					<input type="submit" name="create_event" value="Agendar" />
+					<input type="hidden" name="event_date" />
+					<input type="hidden" name="event_start" />
+					<input type="hidden" name="event_end" />
+					<input type="hidden" name="obj_path" tal:attributes="value reserve/obj_path"/>
+				</form>
+			</div>
 		</div>
 		
 	</tal:condition>	

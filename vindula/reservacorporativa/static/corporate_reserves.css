@@ -1,0 +1,53 @@
+/* 
+ * * * RESERVATION REQUEST * * *
+ */
+
+.reserves #info-reserve { margin-top: 20px; }
+.reserves #info-reserve .documentDescription { margin-bottom: 10px; }
+.reserves #info-reserve span { display: block; }
+.reserves #ajax-loader, .reserves #hours { display: none; }
+.reserves #available { float: left; width: 200px; margin-right: 20px;}
+.reserves #scheduling { float: left; width: 500px; }
+
+.reserves #hours,
+.reserves #form {
+    margin: 15px 0 0 4px;
+    padding: 5px;
+    width: 190px;
+}
+.reserves #form {
+	width: 500px;
+}
+.reserves #available-times div {
+	width: 200px;
+    background-color: #EEEEEE;
+    margin: 4px;
+	cursor: pointer;
+}
+.reserves #hours,
+.reserves #form,
+.reserves #available-times div:hover {
+    background-color: #205C90;
+	font-weight:bolder;
+	color: #FFFFFF;
+}
+.reserves #available-times div span {
+	padding: 2px 10px;
+}
+.reserves #available-times #day ul {
+	display: none;
+  	background-color: #FFFFFF;
+	margin: 0;
+	padding: 4px 0 4px 20px;
+    list-style: none outside none;
+	color: #000000;
+	font-weight: normal;
+}
+.reserves #available-times #day ul li:hover {
+	font-weight:bolder;
+	background-color: #EEEEEE;
+}
+
+.reserves #scheduling-form form {
+	margin: 15px;
+}
