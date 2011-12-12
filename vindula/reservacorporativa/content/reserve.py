@@ -17,16 +17,15 @@ class IReserve(form.Schema):
         values=['semanal', 'quinzenal', 'mensal'],  
         default=_(u"semanal"),
         )
+
+    local = schema.TextLine(
+        title=_(u"Local"),
+        description=_(u"Informe o local onde os eventos deverão ocorrer."),
+        )
     
     duration = schema.Time(
         title=_(u"Duração"),
         description=_(u"Informe a duração dos eventos. Ex.: 01:00 (uma hora)."),
-        )
-    
-    local = schema.TextLine(
-        title=_(u"Local"),
-        description=_(u"Informe o local onde os eventos deverão ocorrer."),
-        required=False,
         )
     
     contact = schema.TextLine(

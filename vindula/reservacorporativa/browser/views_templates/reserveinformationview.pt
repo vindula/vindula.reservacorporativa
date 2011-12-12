@@ -36,9 +36,9 @@
 		<div id="scheduling">
 			<span id="form">Preencha o formul&aacute;rio para agendar a reserva:</span>
 			<div id="scheduling-form" tal:define="memberinfo context/portal_membership/getMemberInfo; member context/@@plone_portal_state/member">
-				<form method="post" tal:attributes="action string: ${context/portal_url}/scheduling-reservation">
+				<form method="post" tal:attributes="action string: ${context/portal_url}/reserve-information">
 					<span>Nome</span>
-					<input type="text" name="name" size="50" tal:attributes="value python:memberinfo['fullname'] or member.getId() or member.getId()" /><p />
+					<input type="text" name="name" size="50" tal:attributes="value python: memberinfo['fullname'] or member.getId()" /><p />
 					<span>E-mail</span>
 					<input type="text" name="mail" size="50" /><p />
 					<span>Telefone</span>
@@ -46,11 +46,12 @@
 					<span>Data da reserva</span>
 					<input type="text" name="date_view" size="50" disabled="true" value="Selecione a data na lista de hor&aacute;rios dispon&iacute;veis" /><p />
 					<span>Observa&ccedil;&otilde;es</span>
-					<textarea name="text" cols="10" rows="3" /><p />
-					<input type="submit" name="create_event" value="Agendar" />
+					<textarea name="obs" cols="10" rows="3" /><p />
+					<input type="submit" name="create_event" value="Agendar" disabled="true" />
 					<input type="hidden" name="event_date" />
 					<input type="hidden" name="event_start" />
 					<input type="hidden" name="event_end" />
+					<input type="hidden" name="local" tal:attributes="value reserve/local"/>
 					<input type="hidden" name="obj_path" tal:attributes="value reserve/obj_path"/>
 				</form>
 			</div>

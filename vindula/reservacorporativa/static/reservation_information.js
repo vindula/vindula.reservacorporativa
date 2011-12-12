@@ -28,6 +28,8 @@ $j(document).ready(function(){
 		
 		$j('#available-times #day li').css('background-color', '#FFFFFF');
 		$j(this).css('background-color', '#DDDDDD');
+		
+		$j('input[name="create_event"]').attr('disabled',false);
 	})
-	
+
 });

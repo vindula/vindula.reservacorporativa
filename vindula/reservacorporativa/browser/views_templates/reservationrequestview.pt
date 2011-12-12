@@ -27,7 +27,6 @@
 						<tal:condition condition="reserves">
 						<span>Selecione o tipo de reserva:</span>
 							<select id="reserves">
-								<option></option>
 								<option tal:repeat="item reserves" tal:attributes="value item/id" tal:content="item/title">Title</option>
 							</select>
 						</tal:condition>

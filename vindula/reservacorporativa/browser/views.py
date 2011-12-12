@@ -12,11 +12,11 @@ class ReservationRequestView(grok.View):
     
     
     def getReserves(self):
-        self.pc = getToolByName(self.context, 'portal_catalog')
-        reserves = self.pc(portal_type='vindula.reservacorporativa.content.reserve',
-                           review_state='published',
-                           sort_on='sortable_title',
-                           sort_order='ascending',)
+        pc = getToolByName(self.context, 'portal_catalog')
+        reserves = pc(portal_type='vindula.reservacorporativa.content.reserve',
+                      review_state='published',
+                      sort_on='sortable_title',
+                      sort_order='ascending',)
         if reserves:
             L = []
             for item in reserves:
@@ -28,24 +28,30 @@ class ReserveInformationView(grok.View):
     grok.context(Interface)
     grok.require('cmf.ManagePortal')
     grok.name('reserve-information')
-    
-    
+
+
     def getInfoReserve(self, id):
-        self.pc = getToolByName(self.context, 'portal_catalog')
-        reserve = self.pc(portal_type='vindula.reservacorporativa.content.reserve', id=id)
-        if reserve:
-            obj = reserve[0].getObject()
-            D = {}
-            D['obj_path'] = obj.absolute_url_path()
-            D['title'] = obj.title
-            D['description'] = obj.description
-            D['local'] = obj.local
-            D['contact'] = obj.contact
-            D['frequency'] = obj.frequency
-            D['hours'] = self.getAvailableTimes(obj)
-            return D
+        form = self.request.form
+
+        if form.get('create_event'):
+            self.createEvent(form)
         
-        
+        else:    
+            pc = getToolByName(self.context, 'portal_catalog')
+            reserve = pc(portal_type='vindula.reservacorporativa.content.reserve', id=id)
+            if reserve:
+                obj = reserve[0].getObject()
+                D = {}
+                D['obj_path'] = obj.absolute_url_path()
+                D['title'] = obj.title
+                D['description'] = obj.description
+                D['local'] = obj.local
+                D['contact'] = obj.contact
+                D['frequency'] = obj.frequency
+                D['hours'] = self.getAvailableTimes(obj)
+                return D
+           
+
     def getAvailableTimes(self, obj):
         today = datetime.date.today()
         oneday = datetime.timedelta(days=1)
@@ -72,13 +78,58 @@ class ReserveInformationView(grok.View):
                 L = []
                 cont = 4
                 while cont != 0:
-                    L.append({'day': weekday,'label':weekday.strftime('%d/%m/%y, ') + field['L'], 'hours': field['H']})
+                    L.append({'day': weekday,
+                              'label':weekday.strftime('%d/%m/%y, ') + field['L'], 
+                              'hours':field['H'],
+                              })
                     weekday = weekday + oneweek
                     cont -= 1
                 days += L
         days.sort()
-        return days     
-    
+        days = self.checkAvailableSlots(obj,days) 
+        return days
+         
+         
+    def checkAvailableSlots(self,folder,days):
+        checked_days = []
+        if len(days) > 0:
+            first_day = days[0]['day']
+            last_day = days[len(days)-1]['day']
+            
+            # TO DO: SUBSTITUIR PELA PESQUISA CATALOG
+            
+            booked_slots = folder.objectValues()
+            
+            #pc = getToolByName(self.context, 'portal_catalog')
+            #                  booked_slots = pc(portal_type='Event',
+            #                  start_date={'query':[first_day, last_day]},
+            #                  path=folder.absolute_url_path())
+            
+            for day in days:
+                # Checking it day
+                checked_day = {}
+                for key in day.keys(): checked_day[key] = day.get(key)
+                checked_day['hours'] = []
+                for slot in day.get('hours'):
+                    # Checking the slots of the current day
+                    slot_free = True
+                    for obj in booked_slots:
+                        #obj = obj.getObject()
+                        if obj.startDate.strftime('%d-%m-%Y') == day.get('day').strftime('%d-%m-%Y'):
+                            event_start = datetime.time(obj.startDate.hour(),obj.startDate.minute())
+                            event_end = datetime.time(obj.endDate.hour(),obj.endDate.minute())
+                            slot_start = slot['start']
+                            slot_end = slot['end']
+                            if not (( (slot_start < event_start) and (slot_end <= event_start) ) or ( (slot_start >= event_end) )):
+                                slot_free = False
+
+                    if slot_free == True:
+                        checked_day['hours'].append(slot)
+                            
+                # Adding the checked day to the list of checked days
+                checked_days.append(checked_day)
+        return checked_days     
+        
     
     def getHours(self, time_start=None, time_end=None, duration=None):
         if time_start and time_end and duration:
@@ -93,46 +144,54 @@ class ReserveInformationView(grok.View):
                # Convert from minutes  to datetime.time
                start = datetime.time(initial / 60, initial % 60)
                end = datetime.time(time_event / 60, time_event % 60)
-               L.append({'label':start.strftime('%H:%M') + ' às ' + end.strftime('%H:%M'), 'start':start, 'end': end})
+               L.append({'label':start.strftime('%H:%M') + ' às ' + end.strftime('%H:%M'), 
+                         'start':start, 
+                         'end': end
+                         })
                initial += duration
             return L 
-    
-    
-    def checkHour(self):
-        pass
-    
-    
-class SchedulingReservationView(grok.View):
-    grok.context(Interface)
-    grok.require('cmf.ManagePortal')
-    grok.name('scheduling-reservation')
-    
-    
-    def createEvent(self):
-        form = self.request.form
-        pc = self.context.portal_catalog
-        username = self.context.portal_membership.getAuthenticatedMember().getUserName()
         
-        if form.get('obj_path'):
-            obj = pc.searchResults(path=form.get('obj_path'))
+
+    def createEvent(self, form):
+        date = form.get('event_date')
+        start = form.get('event_start')
+        end = form.get('event_end')
+        obj_path = form.get('obj_path')
+
+        if date and start and end and obj_path:
+            pc = getToolByName(self.context, 'portal_catalog')
+            obj = pc(portal_type='vindula.reservacorporativa.content.reserve', path=obj_path)
             if obj:
                 folder = obj[0].getObject()
-                
+                username = self.context.portal_membership.getAuthenticatedMember().getUserName()
                 id = username + '-' + datetime.datetime.now().strftime('%d-%m-%y-%H%M%S')
-                title = folder.title + ' - ' + username
+                if form.get('name'):
+                    name = form.get('name')
+                else:
+                    name = username
+                title = folder.title + ' - ' + name
+    
+                
+                # TO DO: VERIFICAR NOVAMENTE SE O SLOT ESTA DISPONIVEL
                 
                 folder.invokeFactory('Event', 
                                       id=id, 
                                       title=title, 
-                                      description='', 
-                                      start_date=form.get('event_date'), 
-                                      end_date=form.get('event_date'), 
-                                      start_time=form.get('event_start'), 
-                                      stop_time=form.get('event_end'))
+                                      description=form.get('obs'), 
+                                      start_date=date, 
+                                      end_date=date, 
+                                      start_time=start, 
+                                      stop_time=end, 
+                                      location=form.get('local'),
+                                      contact_name=form.get('name'),
+                                      contact_phone=form.get('phone'),
+                                      contact_email=form.get('mail')) 
                 
                 event = folder[id]
                 portal_workflow = getToolByName(event, 'portal_workflow')
                 portal_workflow.doActionFor(event, 'publish')
-                
-                link = event.absolute_url()
-                return link
+                self.context.plone_utils.addPortalMessage('Sua reserva foi criada com sucesso.', 'info')
+                self.request.response.redirect(event.absolute_url())
+            else:
+                self.context.plone_utils.addPortalMessage('Ocorreu um erro durante a crição da sua reserva.', 'error')
+                self.request.response.redirect(self.context.portal_url())   
