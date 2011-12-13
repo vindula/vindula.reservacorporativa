@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+from DateTime import DateTime
 from five import grok
 from zope.interface import Interface
 from Products.CMFCore.utils import getToolByName
@@ -7,7 +8,7 @@ from Products.CMFCore.utils import getToolByName
 
 class ReservationRequestView(grok.View):
     grok.context(Interface)
-    grok.require('cmf.ManagePortal')
+    grok.require('zope2.View')
     grok.name('reservation-request')
     
     
@@ -26,7 +27,7 @@ class ReservationRequestView(grok.View):
         
 class ReserveInformationView(grok.View):
     grok.context(Interface)
-    grok.require('cmf.ManagePortal')
+    grok.require('zope2.View')
     grok.name('reserve-information')
 
 
@@ -42,12 +43,13 @@ class ReserveInformationView(grok.View):
             if reserve:
                 obj = reserve[0].getObject()
                 D = {}
-                D['obj_path'] = obj.absolute_url_path()
+                D['obj_path'] = '/'.join(obj.getPhysicalPath())
                 D['title'] = obj.title
                 D['description'] = obj.description
                 D['local'] = obj.local
                 D['contact'] = obj.contact
                 D['frequency'] = obj.frequency
+                D['duration'] = obj.duration.strftime('%H:%M')
                 D['hours'] = self.getAvailableTimes(obj)
                 return D
            
@@ -93,18 +95,16 @@ class ReserveInformationView(grok.View):
     def checkAvailableSlots(self,folder,days):
         checked_days = []
         if len(days) > 0:
-            first_day = days[0]['day']
-            last_day = days[len(days)-1]['day']
+            pc = getToolByName(self.context, 'portal_catalog',)
+            start = DateTime(days[0]['day'].strftime('%Y/%m/%d'))
+            end = DateTime((days[len(days)-1]['day'] + datetime.timedelta(days=1)).strftime('%Y/%m/%d'))
             
-            # TO DO: SUBSTITUIR PELA PESQUISA CATALOG
-            
-            booked_slots = folder.objectValues()
-            
-            #pc = getToolByName(self.context, 'portal_catalog')
-            #                  booked_slots = pc(portal_type='Event',
-            #                  start_date={'query':[first_day, last_day]},
-            #                  path=folder.absolute_url_path())
-            
+            # Search events within the range
+            booked_slots = pc(portal_type='Event',
+                              review_state='published',
+                              path='/'.join(folder.getPhysicalPath()),
+                              start={'query':[start, end], 'range':'minmax'})            
+
             for day in days:
                 # Checking it day
                 checked_day = {}
@@ -114,7 +114,7 @@ class ReserveInformationView(grok.View):
                     # Checking the slots of the current day
                     slot_free = True
                     for obj in booked_slots:
-                        #obj = obj.getObject()
+                        obj = obj.getObject()
                         if obj.startDate.strftime('%d-%m-%Y') == day.get('day').strftime('%d-%m-%Y'):
                             event_start = datetime.time(obj.startDate.hour(),obj.startDate.minute())
                             event_end = datetime.time(obj.endDate.hour(),obj.endDate.minute())
@@ -157,7 +157,7 @@ class ReserveInformationView(grok.View):
         start = form.get('event_start')
         end = form.get('event_end')
         obj_path = form.get('obj_path')
-
+ 
         if date and start and end and obj_path:
             pc = getToolByName(self.context, 'portal_catalog')
             obj = pc(portal_type='vindula.reservacorporativa.content.reserve', path=obj_path)
@@ -170,7 +170,6 @@ class ReserveInformationView(grok.View):
                 else:
                     name = username
                 title = folder.title + ' - ' + name
-    
                 
                 # TO DO: VERIFICAR NOVAMENTE SE O SLOT ESTA DISPONIVEL
                 

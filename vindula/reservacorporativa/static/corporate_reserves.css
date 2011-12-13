@@ -1,4 +1,11 @@
 /* 
+ * * * RESERVE VIEW * * *
+ */
+
+.reserve-view span { display: block; }
+.reserve-view h4 { margin: 25px 0  10px 0; }
+
+/* 
  * * * RESERVATION REQUEST * * *
  */
 
@@ -6,20 +13,20 @@
 .reserves #info-reserve .documentDescription { margin-bottom: 10px; }
 .reserves #info-reserve span { display: block; }
 .reserves #ajax-loader, .reserves #hours { display: none; }
-.reserves #available { float: left; width: 200px; margin-right: 20px;}
-.reserves #scheduling { float: left; width: 500px; }
+.reserves #available { float: left; width: 150px; margin-right: 15px;}
+.reserves #scheduling { float: left; width: 300px; }
 
 .reserves #hours,
 .reserves #form {
     margin: 15px 0 0 4px;
     padding: 5px;
-    width: 190px;
+    width: 140px;
 }
 .reserves #form {
-	width: 500px;
+	width: 300px;
 }
 .reserves #available-times div {
-	width: 200px;
+	width: 150px;
     background-color: #EEEEEE;
     margin: 4px;
 	cursor: pointer;
@@ -49,5 +56,5 @@
 }
 
 .reserves #scheduling-form form {
-	margin: 15px;
+	margin: 10px;
 }

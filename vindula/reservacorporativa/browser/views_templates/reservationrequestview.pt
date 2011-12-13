@@ -5,21 +5,14 @@
 	  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
 	  metal:use-macro="here/main_template/macros/master" 
 	  i18n:domain="vindula.reservacorporativa">
-
-	<head>
-		<metal:js fill-slot="javascript_head_slot">
-			<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_request.js"></script>
-		</metal:js>	
-		<metal:css fill-slot="style_slot">
-			<link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/corporate_reserves.css" />
-		</metal:css>
-	</head>	  	
 	  	
     <body>
         <metal:main fill-slot="content">
             <metal:content-core define-macro="content-core">
 				<div id="content" class="reserves">
 					
+					<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_request.js"></script>
+
 					<h1>Solicita&ccedil;&atilde;o de Reservas</h1>
 					<p />
 					<div tal:define="reserves view/getReserves">

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from five import grok
 from zope import schema
 from plone.directives import form
+from Products.CMFCore.utils import getToolByName
 from vindula.reservacorporativa import MessageFactory as _
 
 
@@ -13,7 +15,7 @@ class IReserve(form.Schema):
     
     frequency = schema.Choice(
         title=_(u"Frequência"),
-        description=_(u"Informe a frequencia com que os eventos ocorrem."),
+        description=_(u"Informe a frequência com que os eventos ocorrem."),
         values=['semanal', 'quinzenal', 'mensal'],  
         default=_(u"semanal"),
         )
@@ -168,4 +170,21 @@ class ReserveView(grok.View):
     grok.name('view')
   
     def getEvents(self):
-        return 'Reserve View'
+        pc = getToolByName(self.context, 'portal_catalog')
+        now = datetime.now()
+        events = pc(portal_type='Event',
+                    review_state='published',
+                    sort_on='start',
+                    path='/'.join(self.context.getPhysicalPath()),
+                    end={'query':[now,],'range':'min'})
+        
+        if events:
+            L = []
+            for item in events:
+                obj = item.getObject()
+                D = {}
+                D['title'] = obj.Title()
+                D['url'] = obj.absolute_url()
+                D['date'] = obj.startDate.strftime('%d/%m/%Y - %Hh %Mmin')
+                L.append(D)
+            return L 

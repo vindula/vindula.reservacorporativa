@@ -5,13 +5,48 @@
 	  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
 	  metal:use-macro="here/main_template/macros/master" 
 	  i18n:domain="vindula.reservacorporativa">
-	
+
 	<body>
 		<metal:main fill-slot="content-core">
 	 		<metal:content-core define-macro="content-core">
-		
-				<span tal:content="view/getEvents"></span>
-				
+					<div class="reserve-view">
+						
+						<h4>Dados da reserva:</h4>
+						
+						<span tal:content="string: Local: ${context/local}" tal:condition="context/local"></span>
+						<span tal:content="string: Contato: ${context/contact}" tal:condition="context/contact"></span>
+						<span tal:content="string: Frequ&ecirc;ncia: ${context/frequency}" tal:condition="context/frequency"></span>
+						<span tal:content="python: 'Dura&ccedil;&atilde;o do evento: ' + context.duration.strftime('%H:%M')" tal:condition="context/duration"></span>
+						<span>Hor&aacute;rios:</span>
+						<ul>
+							<li tal:condition="context/monday"
+						    	tal:content="python: 'Segundas, das '+context.mon_start.strftime('%H:%M')+' &agrave;s '+context.mon_end.strftime('%H:%M')"></li>
+							<li tal:condition="context/tuesday"
+						    	tal:content="python: 'Ter&ccedil;as, das '+context.tue_start.strftime('%H:%M')+' &agrave;s '+context.tue_end.strftime('%H:%M')"></li>
+							<li tal:condition="context/wednesday"
+						    	tal:content="python: 'Quartas, das '+context.wed_start.strftime('%H:%M')+' &agrave;s '+context.wed_end.strftime('%H:%M')"></li>
+							<li tal:condition="context/thursday"
+						    	tal:content="python: 'Quintas, das '+context.thu_start.strftime('%H:%M')+' &agrave;s '+context.thu_end.strftime('%H:%M')"></li>
+							<li tal:condition="context/friday"
+						    	tal:content="python: 'Sextas, das '+context.fri_start.strftime('%H:%M')+' &agrave;s '+context.fri_end.strftime('%H:%M')"></li>
+							<li tal:condition="context/saturday"
+						    	tal:content="python: 'S&aacute;bados, das '+context.sat_start.strftime('%H:%M')+' &agrave;s '+context.sat_end.strftime('%H:%M')"></li>
+							<li tal:condition="context/sunday"
+						    	tal:content="python: 'Domingos, das '+context.sun_start.strftime('%H:%M')+' &agrave;s '+context.sun_end.strftime('%H:%M')"></li>
+						</ul>
+						
+						<a alt="Agendar reserva" tal:attributes="href string: ${context/portal_url}/reservation-request">Clique aqui para agendar uma reserva.</a>
+						
+						<h4>Pr&oacute;ximos eventos:</h4>
+						
+						<div tal:define="events view/getEvents">
+							<span tal:condition="not: events">N&atilde;o h&aacute; eventos registrados.</span>
+							<div tal:condition="events" tal:repeat="event events">
+								<a tal:content="event/title" tal:attributes="href event/url; alt event/title"></a><br />
+								<span tal:content="event/date"></span><p />
+							</div>
+						</div>
+					</div>
 			</metal:content-core>
 		</metal:main>
 	</body>
