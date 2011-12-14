@@ -185,12 +185,10 @@ class ReserveInformationView(grok.View):
                                       contact_name=form.get('name'),
                                       contact_phone=form.get('phone'),
                                       contact_email=form.get('mail')) 
-                
-                event = folder[id]
-                portal_workflow = getToolByName(event, 'portal_workflow')
-                portal_workflow.doActionFor(event, 'publish')
+
+                self.context.publishObj(folder[id])
                 self.context.plone_utils.addPortalMessage('Sua reserva foi criada com sucesso.', 'info')
-                self.request.response.redirect(event.absolute_url())
+                self.request.response.redirect(folder[id].absolute_url())
             else:
                 self.context.plone_utils.addPortalMessage('Ocorreu um erro durante a crição da sua reserva.', 'error')
                 self.request.response.redirect(self.context.portal_url())   

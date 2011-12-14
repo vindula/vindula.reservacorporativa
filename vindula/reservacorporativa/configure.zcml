@@ -4,6 +4,7 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
 	xmlns:grok="http://namespaces.zope.org/grok"
 	xmlns:browser="http://namespaces.zope.org/browser"
+	xmlns:cmf="http://namespaces.zope.org/cmf"
     i18n_domain="vindula.reservacorporativa">
 
   <genericsetup:registerProfile
@@ -21,5 +22,8 @@
 
   <!-- Grok the package to initialise schema interfaces and content classes -->
   <grok:grok package="." />
+  
+  <!-- File System Directory Views registration -->
+  <cmf:registerDirectory name="skins" directory="skins" recursive="True" /> 
   
 </configure>
