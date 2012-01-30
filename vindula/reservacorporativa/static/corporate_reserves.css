@@ -58,3 +58,10 @@
 .reserves #scheduling-form form {
 	margin: 10px;
 }
+
+.reserve-view{
+	margin:20px 0 10px 0;
+}
+.reserve-view img{
+	margin:0 10px 0 10px;
+}

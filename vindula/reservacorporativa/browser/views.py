@@ -3,6 +3,7 @@ import datetime
 from DateTime import DateTime
 from five import grok
 from zope.interface import Interface
+from vindula.reservacorporativa.content.interfaces import IContentReserve
 from Products.CMFCore.utils import getToolByName
 
 
@@ -192,3 +193,17 @@ class ReserveInformationView(grok.View):
             else:
                 self.context.plone_utils.addPortalMessage('Ocorreu um erro durante a crição da sua reserva.', 'error')
                 self.request.response.redirect(self.context.portal_url())   
+                
+                
+                
+    
+# View
+class ContentReserveView(grok.View):
+    grok.context(IContentReserve)
+    grok.require('zope2.View')
+    grok.name('view')                    
+    
+    
+    def update(self):
+        pass
+    

@@ -36,6 +36,11 @@ class IReserve(form.Schema):
         required=False,
         )
     
+    replic_semana = schema.Bool(
+        title=_(u"Replicar na semana"),
+        description=_(u"Selecione a opção caso haja reservas disponíveis para todos os dias da semana,\
+                        neste caso, no campo referente a segunda-feiraas indique os horários de início e término."),
+        )
     
     # Monday
     monday = schema.Bool(

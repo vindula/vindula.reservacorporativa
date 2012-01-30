@@ -12,8 +12,11 @@ vindula.reservacorporativa.egg-info/paster_plugins.txt
 vindula.reservacorporativa.egg-info/requires.txt
 vindula.reservacorporativa.egg-info/top_level.txt
 vindula/reservacorporativa/__init__.py
+vindula/reservacorporativa/config.py
 vindula/reservacorporativa/tests.py
 vindula/reservacorporativa/browser/__init__.py
 vindula/reservacorporativa/browser/views.py
 vindula/reservacorporativa/content/__init__.py
+vindula/reservacorporativa/content/content_reserve.py
+vindula/reservacorporativa/content/interfaces.py
 vindula/reservacorporativa/content/reserve.py

@@ -2,5 +2,8 @@
 <object name="portal_types" meta_type="Plone Types Tool">
 	
   <object name="vindula.reservacorporativa.content.reserve" meta_type="Dexterity FTI" />
-  
+ 
+  <object name="ContentReserve"	
+			meta_type="Factory-based Type Information with dynamic views"/> 
+ 
 </object>
