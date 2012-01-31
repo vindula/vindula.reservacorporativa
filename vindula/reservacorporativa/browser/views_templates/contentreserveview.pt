@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xml:lang="en" 
+	  xmlns:tal="http://xml.zope.org/namespaces/tal" 
+	  xmlns:metal="http://xml.zope.org/namespaces/metal" 
+	  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
+	  metal:use-macro="here/main_template/macros/master" 
+	  i18n:domain="vindula.reservacorporativa">
+	  	
+    <head>
+     	<metal:css fill-slot="style_slot">
+            <link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/corporate_reserves.css" />
+        </metal:css>
+	</head>
+
+	<body>
+		<metal:main fill-slot="content-core">
+			<div class="reserve-view">
+				<div class="row">
+					<div class="cell width-8 position-0">
+						<a class="internal-link"  tal:attributes="href string:${context/absolute_url|nothing}/calendario">
+							<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/calendario.jpeg" style="float:left; " />
+							<p>Clique aqui para visualizar o calendário de reservas.</p>
+						</a>	
+					</div>
+					<div class="cell width-8 position-8">
+						<a class="external-link" tal:attributes="href string:${context/absolute_url|nothing}/reservation-request">
+							<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/reservacorporativo.jpeg" style="float:left;" />
+							<p>Clique aqui para agendar uma reserva.</p>
+						</a>
+					</div>
+				</div>
+			</div>
+		</metal:main>
+	</body>
+</html>
