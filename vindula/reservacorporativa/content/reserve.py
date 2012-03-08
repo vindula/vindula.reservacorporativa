@@ -6,6 +6,8 @@ from plone.directives import form
 from Products.CMFCore.utils import getToolByName
 from vindula.reservacorporativa import MessageFactory as _
 
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent, IObjectCreatedEvent
+
 
 # Interface and schema
 
@@ -39,8 +41,21 @@ class IReserve(form.Schema):
     replic_semana = schema.Bool(
         title=_(u"Replicar na semana"),
         description=_(u"Selecione a opção caso haja reservas disponíveis para todos os dias da semana,\
-                        neste caso, no campo referente a segunda-feiraas indique os horários de início e término."),
+                        neste caso, utilize os campo referente a baixo para indique os horários de início e término.\
+                        Desconsidere os demais campos"),
+        required=False,
         )
+    
+    replic_start = schema.Time(
+        title=_(u"Hora que começa (Replicar na semana)"),
+        required=False,
+        )
+    
+    replic_end = schema.Time(
+        title=_(u"Hora que termina (Replicar na semana)"),
+        required=False,
+        )
+    
     
     # Monday
     monday = schema.Bool(
@@ -166,9 +181,51 @@ class IReserve(form.Schema):
         required=False,
         )
     
+@grok.subscribe(IReserve, IObjectCreatedEvent)
+def ReplicReserve(obj, event):
+    
+    if obj.replic_semana:
+        start = obj.replic_start
+        end = obj.replic_end
+        
+        week = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
+        week_start = ['mon_start','tue_start','wed_start','thu_start','fri_start','sat_start','sun_start']
+        week_end = ['mon_end','tue_end','wed_end','thu_end','fri_end','sat_end','sun_end']
+            
+        
+        for i in week:
+            obj.__setattr__(i,True)
+            
+        for j in week_start:
+            obj.__setattr__(j,start)
+        
+        for m in week_end:
+            obj.__setattr__(m,end)
+            
+    
+@grok.subscribe(IReserve, IObjectModifiedEvent)
+def ReplicReserveEdit(obj, event):
+    if obj.replic_semana:
+        start = obj.replic_start
+        end = obj.replic_end
+        
+        week = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
+        week_start = ['mon_start','tue_start','wed_start','thu_start','fri_start','sat_start','sun_start']
+        week_end = ['mon_end','tue_end','wed_end','thu_end','fri_end','sat_end','sun_end']
+            
+        
+        for i in week:
+            obj.__setattr__(i,True)
+            
+        for j in week_start:
+            obj.__setattr__(j,start)
+        
+        for m in week_end:
+            obj.__setattr__(m,end)
+
 
 # View
-    
+   
 class ReserveView(grok.View):
     grok.context(IReserve)
     grok.require('zope2.View')
@@ -193,3 +250,4 @@ class ReserveView(grok.View):
                 D['date'] = obj.startDate.strftime('%d/%m/%Y - %Hh %Mmin')
                 L.append(D)
             return L 
+        
