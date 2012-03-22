@@ -12,9 +12,10 @@
         </metal:css>
 	</head>
 
-	<body>
+	<body> 
 		<metal:main fill-slot="content-core">
-			<div class="reserve-view">
+			<div class="reserve-view" tal:define="member python:context.portal_membership.getAuthenticatedMember();
+					  							  altenticado python:str(member)!='Anonymous User';">
 				<div class="row">
 					<div class="cell width-8 position-0">
 						<a class="internal-link"  tal:attributes="href string:${context/absolute_url|nothing}/calendario">
@@ -23,10 +24,19 @@
 						</a>	
 					</div>
 					<div class="cell width-8 position-8">
-						<a class="external-link" tal:attributes="href string:${context/absolute_url|nothing}/reservation-request">
-							<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/reservacorporativo.jpeg" style="float:left;" />
-							<p>Clique aqui para agendar uma reserva.</p>
-						</a>
+						<tal:cont condition="altenticado">
+							<a class="external-link" tal:attributes="href string:${context/absolute_url|nothing}/reservation-request">
+								<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/reservacorporativo.jpeg" style="float:left;" />
+								<p>Clique aqui para agendar uma reserva.</p>
+							</a>	
+						</tal:cont>
+						<tal:cont condition="not:altenticado">
+							<a class="external-link" tal:attributes="href string:${context/absolute_url|nothing}/login">
+								<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/reservacorporativo.jpeg" style="float:left;" />
+								<p>Para agendar uma reserva é necessário estar autenticado,<br /> clique aqui para se autenticado.</p>
+							</a>	
+						</tal:cont>
+							
 					</div>
 				</div>
 			</div>
