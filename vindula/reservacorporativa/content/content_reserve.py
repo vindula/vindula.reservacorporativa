@@ -52,9 +52,9 @@ def CreatElemetsFormReserve(context, event):
         theCriteria.setValue(context)
         theCriteria.setRecurse(True)
         
-        theCriteria = colection.addCriterion('review_state','ATSelectionCriterion')
-        theCriteria.setValue('published')
-        theCriteria.setOperator('and')
+        #theCriteria = colection.addCriterion('review_state','ATSelectionCriterion')
+        #theCriteria.setValue('published')
+        #theCriteria.setOperator('and')
         
         colection.setLayout('solgemafullcalendar_view')
         

@@ -9,4 +9,6 @@
 ##
 from Products.CMFCore.utils import getToolByName
 portal_workflow = getToolByName(obj, 'portal_workflow')
-portal_workflow.doActionFor(obj, 'publish')
+
+try:portal_workflow.doActionFor(obj, 'publish')
+except:portal_workflow.doActionFor(obj, 'publish_internally')

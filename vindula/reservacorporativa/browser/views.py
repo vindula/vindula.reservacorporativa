@@ -16,7 +16,7 @@ class ReservationRequestView(grok.View):
     def getReserves(self):
         pc = getToolByName(self.context, 'portal_catalog')
         reserves = pc(portal_type='vindula.reservacorporativa.content.reserve',
-                      review_state='published',
+                      #review_state='published',
                       sort_on='sortable_title',
                       sort_order='ascending',)
         if reserves:
@@ -102,7 +102,7 @@ class ReserveInformationView(grok.View):
             
             # Search events within the range
             booked_slots = pc(portal_type='Event',
-                              review_state='published',
+                              #review_state='published',
                               path='/'.join(folder.getPhysicalPath()),
                               start={'query':[start, end], 'range':'minmax'})            
 
