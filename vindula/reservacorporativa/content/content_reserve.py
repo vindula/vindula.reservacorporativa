@@ -43,8 +43,10 @@ def CreatElemetsFormReserve(context, event):
     
     if 'calendario' in context.keys():
         colection = context['calendario']
-        portal_workflow.doActionFor(colection, 'publish')
         
+        try:portal_workflow.doActionFor(colection, 'publish')
+        except:portal_workflow.doActionFor(colection, 'publish_internally') 
+                
         theCriteria = colection.addCriterion('Type','ATSelectionCriterion')
         theCriteria.setValue("Event")
         
