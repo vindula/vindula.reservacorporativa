@@ -32,7 +32,7 @@
 						</tal:condition>
 					</div>
 					
-					<input id="view-info-reserve" type="hidden" tal:attributes="value string: ${context/portal_url}/reserve-information" />
+					<input id="view-info-reserve" type="hidden" tal:attributes="value string: ${context/absolute_url|nothing}/reserve-information" />
 					
 					<div id="ajax-loader">Aguarde...</div>
 					
