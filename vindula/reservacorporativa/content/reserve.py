@@ -236,6 +236,7 @@ class ReserveView(grok.View):
         now = datetime.now()
         events = pc(portal_type='Event',
                     #review_state='published',
+                    review_state = ['published','internal'],
                     sort_on='start',
                     path='/'.join(self.context.getPhysicalPath()),
                     end={'query':[now,],'range':'min'})

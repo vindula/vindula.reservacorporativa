@@ -17,6 +17,7 @@ class ReservationRequestView(grok.View):
         pc = getToolByName(self.context, 'portal_catalog')
         reserves = pc(portal_type='vindula.reservacorporativa.content.reserve',
                       #review_state='published',
+                      review_state = ['published','internal'],
                       sort_on='sortable_title',
                       sort_order='ascending',)
         if reserves:
@@ -174,19 +175,7 @@ class ReserveInformationView(grok.View):
                 
                 # TO DO: VERIFICAR NOVAMENTE SE O SLOT ESTA DISPONIVEL
                 
-                folder.invokeFactory('Event', 
-                                      id=id, 
-                                      title=title, 
-                                      description=form.get('obs'), 
-                                      start_date=date, 
-                                      end_date=date, 
-                                      start_time=start, 
-                                      stop_time=end, 
-                                      location=form.get('local'),
-                                      contact_name=form.get('name'),
-                                      contact_phone=form.get('phone'),
-                                      contact_email=form.get('mail')) 
-
+                self.context.createObj(folder,id,title,date,start,end,form)
                 self.context.publishObj(folder[id])
                 self.context.plone_utils.addPortalMessage('Sua reserva foi criada com sucesso.', 'info')
                 self.request.response.redirect(folder[id].absolute_url())
