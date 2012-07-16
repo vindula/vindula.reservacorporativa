@@ -8,7 +8,7 @@ from Products.CMFCore.utils import getToolByName
 
 
 class ReservationRequestView(grok.View):
-    grok.context(Interface)
+    grok.context(IContentReserve)
     grok.require('zope2.View')
     grok.name('reservation-request')
     
@@ -16,6 +16,7 @@ class ReservationRequestView(grok.View):
     def getReserves(self):
         pc = getToolByName(self.context, 'portal_catalog')
         reserves = pc(portal_type='vindula.reservacorporativa.content.reserve',
+                      path={'query': '/'.join(self.context.getPhysicalPath()), 'depth': 1},
                       #review_state='published',
                       review_state = ['published','internal'],
                       sort_on='sortable_title',
@@ -28,7 +29,7 @@ class ReservationRequestView(grok.View):
         
         
 class ReserveInformationView(grok.View):
-    grok.context(Interface)
+    grok.context(IContentReserve)
     grok.require('zope2.View')
     grok.name('reserve-information')
 

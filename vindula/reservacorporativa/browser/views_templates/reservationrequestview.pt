@@ -16,8 +16,7 @@
 	</head>
 	  	
     <body>
-        <metal:main fill-slot="content">
-            <metal:content-core define-macro="content-core">
+        <metal:main fill-slot="content-core">
 				<div id="content" class="reserves">
 
 					<h1>Solicita&ccedil;&atilde;o de Reservas</h1>
@@ -41,7 +40,6 @@
 					</div>
 					
 				</div>     	
-            </metal:content-core>
         </metal:main>
     </body>
 	
