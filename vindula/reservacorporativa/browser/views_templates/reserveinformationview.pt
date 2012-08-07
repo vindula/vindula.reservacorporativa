@@ -1,4 +1,5 @@
 <script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_information.js"></script>
+<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/mascaras.js"></script>
 
 <div tal:define="reserve python: view.getInfoReserve(context.REQUEST.form.get('id'))">
 
@@ -43,7 +44,7 @@
 					<span>E-mail</span>
 					<input type="text" name="mail" size="42" /><p />
 					<span>Telefone</span>
-					<input type="text" name="phone" size="42" /><p />
+					<input type="text" name="phone" size="42" maxlength="13" onKeyPress="Mascara(this)" /><p />
 					<span>Data da reserva</span>
 					<input type="text" name="date_view" size="42" disabled="true" value="Selecione a data na lista de hor&aacute;rios dispon&iacute;veis" /><p />
 					<span>Observa&ccedil;&otilde;es</span>

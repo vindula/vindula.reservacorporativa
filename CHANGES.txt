@@ -16,3 +16,6 @@ Changelog
 1.1.2 - 2012-07-16
 ---------------------
 - Ajustes para listar as reservas do contexto content_reserve
+
+1.1.2 - 2012-08-07
+- Adição de máscaras nos campos de telefone.
