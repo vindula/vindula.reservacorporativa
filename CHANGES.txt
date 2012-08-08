@@ -19,3 +19,6 @@ Changelog
 
 1.1.2 - 2012-08-07
 - Adição de máscaras nos campos de telefone.
+
+1.1.2 - 2012-08-08
+- Alteração de frase em Reserva Corporativa
