@@ -5,5 +5,8 @@
  
   <object name="ContentReserve"	
 			meta_type="Factory-based Type Information with dynamic views"/> 
+			
+  <object name="BlockReserve"	
+			meta_type="Factory-based Type Information with dynamic views"/> 
  
 </object>

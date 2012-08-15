@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      i18n:domain="plone">
+<head>
+	<style media="all" type="text/css">
+		* { font-family: Helvetica;}
+		
+		p, div { font-size: 14px;}
+		
+		p { margin: 2px 0;}
+		label { font-weight: bold; }
+		
+		dl {
+			border-bottom: 1px solid;
+    		padding-bottom: 10px;
+		}
+		
+		#logo {
+			margin: 0 0 30px 0;
+		}
+		
+		.description { 
+			margin: 5px 0 0 15px; 
+			color: #595959;
+			font-size: 13px;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		window.onload=window.print();
+	</script>
+</head>
+
+<body>
+	<div tal:define="reservations view/getFuturesReservations | nothing;
+					 normalizeString nocall: context/plone_utils/normalizeString;
+					 member python:context.portal_membership.getAuthenticatedMember();
+					 
+					 portal python: context.portal_url.getPortalObject();
+	 				 config_obj python: portal['control-panel-objects']['vindula_themeconfig'];">
+		
+		<div id="logo">
+			<a class="vindula-portal-logo" tal:attributes="href string:${context/portal_url}" title="P&aacute;gina Inicial">
+				<img tal:condition="config_obj/getLogoCabecalho" 
+				     tal:attributes="src python: config_obj.getLogoCabecalho().absolute_url() or None" />
+		
+				<img tal:condition="not: config_obj/getLogoCabecalho" 
+				     src="/++resource++vindula.controlpanel/imagens/logo_topo.png" />	
+			</a>
+		</div>	
+		
+		<tal:cond condition="reservations">
+			<h2>Próximas Reservas</h2>
+	        <tal:rep repeat="item reservations">
+				<dl tal:define="item_type item/Type;
+								item_type_class python:'contenttype-' + normalizeString(item_type);
+								item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
+	                       		item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
+	                <dt>
+	                    <span class="summary">
+	                        <h3 tal:content="python: '%s - %s' % (item.start_date.strftime('%d/%m/%Y'), (item.title or item.id or None))">Item Title</h3>
+	                    </span>
+						
+						<input type="hidden" id="id_event" tal:attributes="value item/id"/>
+						<input type="hidden" id="ab_url" tal:attributes="value context/absolute_url"/>
+	                </dt>
+					
+					<dd>
+						<p tal:condition="python: item.getOwner().getProperty('fullname') or item.getOwner().getUserName()">
+							<label>Nome: </label><span tal:content="python: item.getOwner().getProperty('fullname') or item.getOwner().getUserName()"></span>
+						</p>
+						<p tal:condition="item/getLocation">
+							<label>Local: </label><span tal:content="item/getLocation"></span>
+						</p>
+						<p tal:condition="item/contact_email">
+							<label>Email: </label><span tal:content="item/contact_email"></span>
+						</p>
+						<p tal:condition="item/start_date">
+							<label>Data: </label><span tal:content="python:item.start_date.strftime('%d/%m/%Y')"></span>
+						</p>
+						<p tal:condition="item/start_date">
+							<label>Horário: </label><span tal:content="python:'entre as %s e as %s' % (item.start_date.strftime('%H:%M'), item.end_date.strftime('%H:%M'))"></span>
+						</p>
+						
+						<div tal:condition="item/Description">
+							<label>Descrição da reserva:</label><br>
+							<p class="description" tal:content="item/Description|nothing">description</p>
+						</div>
+					</dd>
+				</dl>				
+			</tal:rep>
+		</tal:cond>
+		
+		
+		<tal:cond condition="not: reservations">
+			
+			<h2>Não possui reservas agendadas para os próximos dias.</h2>
+			
+		</tal:cond>
+    </div>
+</body>
+</html>

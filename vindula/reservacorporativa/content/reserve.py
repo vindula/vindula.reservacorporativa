@@ -34,7 +34,13 @@ class IReserve(form.Schema):
     
     contact = schema.TextLine(
         title=_(u"Contato"),
-        description=_(u"Dados de contato para dúvidas e informações, nome, e-mail ou telefone."),
+        description=_(u"Insira o email do usuário que vai receber notificações das reservas efetuadas."),
+        required=False,
+        )
+    
+    mult_horarios = schema.Bool(
+        title=_(u"Permitir mais de um horário"),
+        description=_(u"Selecione se essa reserva irá permitir que o usuário selecione mais de um horário por reserva."),
         required=False,
         )
     

@@ -14,7 +14,10 @@ $j(document).ready(function(){
 		$j("#reserves option:selected").each(function () {
 	 		var reserve = $j(this).val();
 			var url = $j('#view-info-reserve').val();
-			$j.get(url,{ id: reserve }, function(data){
+			var edit_reserve = ''
+			if ($j('#edit-reserve'))
+				edit_reserve = $j('#edit-reserve').val();
+			$j.get(url,{ 'id': reserve, 'id_edit': edit_reserve}, function(data){
 				$j('#info-reserve').html(data);
 			});
 		});

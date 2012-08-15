@@ -65,3 +65,13 @@
 .reserve-view img{
 	margin:0 10px 0 10px;
 }
+
+
+/* STYLE MYRESERVATIONS VIEW */
+
+#my-reservations .blockEvent {
+	border-bottom: 1px solid #CCC;
+	min-height: 115px;
+}
+.cursorPointer { cursor: pointer; }
+#my-reservations .buttonsReservations { margin: 13px 5px;}

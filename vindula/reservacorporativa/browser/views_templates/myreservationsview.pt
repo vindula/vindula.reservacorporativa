@@ -1,0 +1,94 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+<head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+		
+		<metal:js fill-slot="javascript_head_slot">
+			<script type="text/javascript" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/my_reservations.js"></script>
+		</metal:js>
+		
+		<metal:css fill-slot="style_slot">
+            <link rel="stylesheet" type="text/css" tal:attributes="href string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/corporate_reserves.css" />
+        </metal:css>
+</head>
+<body>
+   <div metal:fill-slot="content">
+		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
+		<div metal:use-macro="context/global_statusmessage/macros/portal_message">
+         Status message
+        </div>
+		<div id="content" tal:define="reservations view/checkReservations;
+		                              normalizeString nocall: context/plone_utils/normalizeString;
+									  member python:context.portal_membership.getAuthenticatedMember();
+									   
+									  Batch python:modules['Products.CMFPlone'].Batch;
+				                      b_size python:10;
+				                      b_start python:0;
+				                      b_start request/b_start | b_start;
+									  batch python:Batch(reservations, b_size, int(b_start));">
+			
+			<h2>Minhas Reservas</h2>
+			
+			<div id="my-reservations">
+				<form class="buttonsReservations" tal:attributes="action string: ${context/absolute_url}/my-reservations" method="post">
+					<input class="comments bt_comments" type="submit" value="Anteriores" name="prev_reservations">
+					<input class="comments bt_comments" type="submit" value="Próximas" name="next_reservations">
+				</form>
+				
+				<tal:cond tal:condition="reservations">
+			        <tal:rep repeat="item batch">
+						<dl class="blockEvent" tal:define="item_type item/Type;
+														   item_type_class python:'contenttype-' + normalizeString(item_type);
+														   item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
+							                       		   item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
+			                <dt>
+			                    <span class="summary" tal:define="item_icon python:plone_view.getIcon(item);">
+									<img tal:replace="structure item_icon/html_tag" />
+			                        <a href="#" class="contenttype-folder state-published url"
+			                           tal:attributes="href item/absolute_url|nothing;
+									   				   class string:$item_type_class $item_wf_state_class url"
+			                           tal:content="item/title|item/id|nothing">Item Title</a>
+			                    </span>
+								
+								<input type="hidden" id="id_event" tal:attributes="value item/id"/>
+								<input type="hidden" id="ab_url" tal:attributes="value context/absolute_url"/>
+								
+								<a alt="Editar" title="Editar" class="edit-reserve" id="edit-reserve"
+						           tal:attributes="href string:${item/aq_parent/aq_parent/absolute_url|nothig}/reservation-request?id_ev=${item/id}" >
+						        	<img tal:attributes="src string: ${context/portal_url|nothing}/++resource++vindula.reservacorporativa/event_edit_icon.png" />
+								</a>
+								<span alt="Excluir" title="Excluir" class="delete-reserve" id="delete-reserve" class="cursorPointer">
+									<img tal:attributes="src string: ${context/portal_url|nothing}/++resource++vindula.reservacorporativa/event_remove_icon.png" />
+								</span>
+			                </dt>
+							
+							<dd>
+								<label>Data: </label><span tal:content="python:item.start_date.strftime('%d/%m/%Y')"></span><br>
+								<label>Horário: </label><span tal:content="python:'entre as %s e as %s' % (item.start_date.strftime('%H:%M'), item.end_date.strftime('%H:%M'))"></span>
+								
+								<p tal:condition="item/description|nothing" class="description" tal:content="item/Description|nothing">Description</p>
+							</dd>
+						</dl>				
+					</tal:rep>
+					
+					<div class="navigation-users" tal:define="batch python:Batch(reservations, b_size, int(b_start));">
+						<div metal:use-macro="here/batch_macros/macros/navigation" />
+					</div>
+				</tal:cond>
+			
+				<tal:cond tal:condition="not: reservations">
+					<p>Você não possui reservas agendadas.</p>	
+				</tal:cond>
+	    	</div>
+		</div>
+    </div>
+</body>
+</html>

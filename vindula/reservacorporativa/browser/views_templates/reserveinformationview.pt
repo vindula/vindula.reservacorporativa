@@ -13,51 +13,55 @@
 		<span tal:content="string: Contato: ${reserve/contact}" tal:condition="reserve/contact"></span>
 		<span tal:content="string: Frequ&ecirc;ncia: ${reserve/frequency}" tal:condition="reserve/frequency"></span>
 		<span tal:content="string: Dura&ccedil;&atilde;o do evento: ${reserve/duration}" tal:condition="reserve/duration"></span>
+		<input tal:attributes="value reserve/mult_horarios" type="hidden" name="mult_horarios" />
 		
 		<!-- Available -->
-		<div id="available">
-			<span id="hours">Hor&aacute;rios dispon&iacute;veis:</span>
-			<div id="available-times">
-				<tal:repeat repeat="day reserve/hours">
-					<div id="day" tal:condition="day/hours">
-						<span tal:content="string: ${day/label}">17/12/11, segunda</span>
-						<input type="hidden" class="date" tal:attributes="value day/day"/>
-						<ul>
-							<li tal:repeat="hour day/hours">
-								<span tal:content="hour/label">09:00 as 13:00</span>
-								<input type="hidden" class="start" tal:attributes="value hour/start"/>
-								<input type="hidden" class="end" tal:attributes="value hour/end"/>
-							</li>
-						</ul>
-					</div>
-				</tal:repeat>
+		<form method="post" tal:attributes="action string: ${context/absolute_url}/reserve-information">
+			<div id="available">
+				<span id="hours">Hor&aacute;rios dispon&iacute;veis:</span>
+				<div id="available-times">
+					<tal:repeat repeat="day reserve/hours">
+						<div id="day" tal:condition="day/hours">
+							<span tal:content="string: ${day/label}">17/12/11, segunda</span>
+							<input type="hidden" class="date" tal:attributes="value day/day"/>
+							<ul>
+								<li tal:repeat="hour day/hours">
+									<span tal:content="hour/label">09:00 as 13:00</span>
+									<input type="hidden" class="start" tal:attributes="value hour/start"/>
+									<input type="hidden" class="end" tal:attributes="value hour/end"/>
+									<input name="hours-selected:list" class="display-none hours-selected"
+										   tal:define="type_check python: reserve['mult_horarios'] and 'checkbox' or 'radio'"
+										   tal:attributes="value python: '%s|%s|%s' % (day['day'].strftime('%d-%m-%Y'), hour['start'], hour['end']);
+														   type type_check"/>
+								</li>
+							</ul>
+						</div>
+					</tal:repeat>
+				</div>
 			</div>
-		</div>
-		
-		<!-- Scheduling -->
-		<div id="scheduling">
-			<span id="form">Preencha o formul&aacute;rio para agendar a reserva:</span>
-			<div id="scheduling-form" tal:define="memberinfo context/portal_membership/getMemberInfo; member context/@@plone_portal_state/member">
-				<form method="post" tal:attributes="action string: ${context/portal_url}/reserve-information">
-					<span>Nome</span>
-					<input type="text" name="name" size="42" tal:attributes="value python: memberinfo['fullname'] or member.getId()" /><p />
-					<span>E-mail</span>
-					<input type="text" name="mail" size="42" /><p />
-					<span>Telefone</span>
-					<input type="text" name="phone" size="42" maxlength="13" onKeyPress="Mascara(this)" /><p />
-					<span>Data da reserva</span>
-					<input type="text" name="date_view" size="42" disabled="true" value="Selecione a data na lista de hor&aacute;rios dispon&iacute;veis" /><p />
-					<span>Observa&ccedil;&otilde;es</span>
-					<textarea name="obs" cols="10" rows="3" /><p />
-					<input type="submit" name="create_event" value="Agendar" disabled="true" />
-					<input type="hidden" name="event_date" />
-					<input type="hidden" name="event_start" />
-					<input type="hidden" name="event_end" />
-					<input type="hidden" name="local" tal:attributes="value reserve/local"/>
-					<input type="hidden" name="obj_path" tal:attributes="value reserve/obj_path"/>
-				</form>
+
+			<!-- Scheduling -->
+			<div id="scheduling">
+				<span id="form">Preencha o formul&aacute;rio para agendar a reserva:</span>
+				<div id="scheduling-form" tal:define="memberinfo context/portal_membership/getMemberInfo;
+													  member context/@@plone_portal_state/member;
+													  edit_event view/getEditEvent | nothing;">
+						<span>Nome</span>
+						<input type="text" name="name" size="42" tal:attributes="value python: edit_event['name'] or memberinfo['fullname'] or member.getId()" /><p />
+						<span>E-mail</span>
+						<input type="text" name="mail" size="42" tal:attributes="value edit_event/mail|nothing" /><p />
+						<span>Telefone</span>
+						<input type="text" name="phone" size="42" tal:attributes="value edit_event/phone|nothing" maxlength="13" onKeyUp="Mascara(this);" onKeyDown="Mascara(this);" onKeyPress="Mascara(this);"><p />
+						<span>Observa&ccedil;&otilde;es</span>
+						<textarea name="obs" cols="10" rows="3" tal:content="edit_event/obs|nothing" /><p />
+						<input type="submit" name="create_event" value="Agendar" disabled="true" />
+						<input type="hidden" name="local" tal:attributes="value python: edit_event['local'] or reserve['local'] or None"/>
+						<input type="hidden" name="obj_path" tal:attributes="value reserve/obj_path"/>
+						<input type="hidden" name="edit_event" tal:condition="edit_event" tal:attributes="value edit_event/id_edit|nothing">
+				</div>
 			</div>
-		</div>
+			
+		</form>
 		
 	</tal:condition>	
 	
