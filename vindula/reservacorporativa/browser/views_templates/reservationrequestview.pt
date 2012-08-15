@@ -8,7 +8,8 @@
 	  	
     <head>
         <metal:js fill-slot="javascript_head_slot">
-            <script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_request.js"></script>
+            <script type="text/javascript" tal:attributes="src string:${context/absolute_url}/++resource++vindula.reservacorporativa/reservation_request.js"></script>
+			<script type="text/javascript" tal:attributes="src string:${context/absolute_url}/++resource++vindula.reservacorporativa/mascaras.js"></script>
         </metal:js>    
      	<metal:css fill-slot="style_slot">
             <link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/corporate_reserves.css" />

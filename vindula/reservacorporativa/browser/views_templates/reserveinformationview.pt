@@ -1,5 +1,4 @@
-<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/reservation_information.js"></script>
-<script type="text/javascript" tal:attributes="src string:++resource++vindula.reservacorporativa/mascaras.js"></script>
+<script type="text/javascript" tal:attributes="src string:${context/absolute_url}/++resource++vindula.reservacorporativa/reservation_information.js"></script>
 
 <div tal:define="reserve python: view.getInfoReserve(context.REQUEST.form.get('id'))">
 
@@ -51,7 +50,8 @@
 						<span>E-mail</span>
 						<input type="text" name="mail" size="42" tal:attributes="value edit_event/mail|nothing" /><p />
 						<span>Telefone</span>
-						<input type="text" name="phone" size="42" tal:attributes="value edit_event/phone|nothing" maxlength="13" onKeyUp="Mascara(this);" onKeyDown="Mascara(this);" onKeyPress="Mascara(this);"><p />
+						<input type="text" name="phone" size="42" tal:attributes="value edit_event/phone|nothing"
+							   onKeyUp="Mascara(this, Telefone);" onKeyDown="Mascara(this, Telefone);" onKeyPress="Mascara(this, Telefone);"/>
 						<span>Observa&ccedil;&otilde;es</span>
 						<textarea name="obs" cols="10" rows="3" tal:content="edit_event/obs|nothing" /><p />
 						<input type="submit" name="create_event" value="Agendar" disabled="true" />
