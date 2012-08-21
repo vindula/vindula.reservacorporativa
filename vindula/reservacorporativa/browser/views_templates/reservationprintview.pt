@@ -40,7 +40,7 @@
 					 member python:context.portal_membership.getAuthenticatedMember();
 					 
 					 portal python: context.portal_url.getPortalObject();
-	 				 config_obj python: portal['control-panel-objects']['vindula_themeconfig'];">
+	 				 config_obj python: portal['control-panel-objects']['ThemeConfig'];">
 		
 		<div id="logo">
 			<a class="vindula-portal-logo" tal:attributes="href string:${context/portal_url}" title="P&aacute;gina Inicial">
