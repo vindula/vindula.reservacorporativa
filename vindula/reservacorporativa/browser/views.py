@@ -9,7 +9,7 @@ from Products.CMFCore.interfaces import ISiteRoot
 from zope.app.component.hooks import getSite
 
 #Importando a classe para pegar os dados do usuário do BD
-from vindula.myvindula.utils import UtilMyvindula
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 class ReservationRequestView(grok.View):
     grok.context(IContentReserve)
