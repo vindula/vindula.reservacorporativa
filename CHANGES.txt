@@ -31,3 +31,8 @@ Changelog
 	Possibilidade de agendar mais de um horário;
 	Disparar email, nos eventos de criacao, edicao e exclusao de uma reserva;
 	Bug fix, adicionada novas funcionalidades.
+
+
+1.1.5 - 2012-09-04
+--------------------
+- Ajustes na descrição do campo 'Replicar na semana' no objeto reserva
