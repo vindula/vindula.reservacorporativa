@@ -309,8 +309,8 @@ class ReserveInformationView(grok.View):
             user_login = ms.getAuthenticatedMember().getUserName()
             urser_bd = UtilMyvindula().get_prefs_user(user_login)
             if urser_bd:
-                D['mail'] = urser_bd.email
-                D['phone'] = urser_bd.phone_number or urser_bd.cell_phone
+                D['mail'] = urser_bd.get('email','')
+                D['phone'] = urser_bd.get('phone_number','') or urser_bd.get('cell_phone','')
         
         return D 
     

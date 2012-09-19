@@ -36,3 +36,4 @@ Changelog
 1.1.5 - 2012-09-04
 --------------------
 - Ajustes na descrição do campo 'Replicar na semana' no objeto reserva
+- Ajustes para pegar os dados dos usuarios do novo mecanismo de prefs_user
