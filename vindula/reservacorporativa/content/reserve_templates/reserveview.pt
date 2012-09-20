@@ -41,7 +41,7 @@
 						    	tal:content="python: 'Domingos, das '+context.sun_start.strftime('%H:%M')+' &agrave;s '+context.sun_end.strftime('%H:%M')"></li>
 						</ul>
 						
-						<a alt="Agendar reserva" tal:attributes="href string: ${context/absolute_url|nothing}/reservation-request">Clique aqui para agendar uma reserva.</a>
+						<a alt="Agendar reserva" tal:attributes="href string: ${context/aq_parent/absolute_url|nothing}/reservation-request">Clique aqui para agendar uma reserva.</a>
 						
 						<h4>Pr&oacute;ximos eventos:</h4>
 						
