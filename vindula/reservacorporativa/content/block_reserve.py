@@ -17,7 +17,6 @@ from vindula.reservacorporativa.config import *
 
 from datetime import datetime, time
 from DateTime import DateTime
-from vindula.controlpanel.browser.at.widget import VindulaReferenceSelectionWidget
 
 BlockReserve_schema = ATDocumentSchema.copy() + Schema((
                                                         
