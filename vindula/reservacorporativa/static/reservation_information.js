@@ -69,7 +69,7 @@ $j(document).ready(function(){
 	$j('form').submit(function() {
 		var checked_elements = $j('input[name="hours-selected:list"]:checked');
 		var hours_selected = [];
-		msg = "Você deseja reservar um horário: \n\n";
+		msg = "A seguinte reserva está sendo realizada: \n\n";
 		
 		for(var i = 0; i < checked_elements.length; i++){
 			hours_selected.push(checked_elements[i].value);
@@ -81,11 +81,17 @@ $j(document).ready(function(){
 				date = hours_selected[i]['date'];
 				start = hours_selected[i]['start'];
 				end = hours_selected[i]['end'];
-				msg += "Dia: " + date + " entre as " + start + " e as " + end + "\n";
-			}
-		}
+				msg += "Dia: " + date + " entre as " + start + " e as " + end + "\n\n";
+				
+				msg +="Deseja confirmar esta reserva?";
+
+						
+				}
 		
-		if(confirm(msg)){
+			}
+		
+		
+		if(confirm(msg )){
 			return true;
 		}else{
 			return false;
