@@ -6,21 +6,21 @@
  *    Data:    26/08/2008
  *    Obs:
  */
-/*Função Pai de Mascaras*/
+/*FunÔøΩÔøΩo Pai de Mascaras*/
 function Mascara(o, f){
     v_obj = o
     v_fun = f
     setTimeout("execmascara()", 1)
 }
 
-/*Função que Executa os objetos*/
+/*FunÔøΩÔøΩo que Executa os objetos*/
 function execmascara(){
     v_obj.value = v_fun(v_obj.value)
 }
 
 
 
-/*Função que padroniza telefone (11) 4184-1241*/
+/*FunÔøΩÔøΩo que padroniza telefone (11) 4184-1241*/
 function Telefone(v){
     if (v.length <= 15) {
         v = v.replace(/\D/g, "")
@@ -33,7 +33,7 @@ function Telefone(v){
     return v
 }
 
-/*Função que padroniza DATA*/
+/*FunÔøΩÔøΩo que padroniza DATA*/
 function Data(v){
     if (v.length <= 10) {
         v = v.replace(/\D/g, "")
@@ -46,7 +46,7 @@ function Data(v){
     return v
 }
 
-/*Função que Determina as expressões regulares dos objetos*/
+/*FunÔøΩÔøΩo que Determina as expressÔøΩes regulares dos objetos*/
 function leech(v){
     v = v.replace(/o/gi, "0")
     v = v.replace(/i/gi, "1")
@@ -58,12 +58,12 @@ function leech(v){
     return v
 }
 
-/*Função que permite apenas numeros*/
+/*FunÔøΩÔøΩo que permite apenas numeros*/
 function Integer(v){
     return v.replace(/\D/g, "")
 }
 
-/*Função que padroniza CPF*/
+/*FunÔøΩÔøΩo que padroniza CPF*/
 function Cpf(v){
     if (v.length <= 14) {
         v = v.replace(/\D/g, "")
@@ -78,7 +78,7 @@ function Cpf(v){
     return v
 }
 
-/*Função que padroniza CEP*/
+/*FunÔøΩÔøΩo que padroniza CEP*/
 function Cep(v){
     if (v.length <= 9) {
         v = v.replace(/D/g, "")
@@ -90,7 +90,7 @@ function Cep(v){
     return v
 }
 
-/*Função que padroniza CNPJ */
+/*FunÔøΩÔøΩo que padroniza CNPJ */
 function Cnpj(v){
     if (v.length >= 18) {
         v = v.replace(/\D/g, "")
@@ -124,26 +124,4 @@ function FormataCnpj(campo, teclapres){
     }
 }
 
-/*Função que padroniza o Site*/
-function blogs(v){
-    v = v.replace(/^http:\/\/?/, "")
-    dominio = v
-    caminho = ""
-    if (v.indexOf("/") > -1) 
-        dominio = v.split("/")[0]
-    caminho = v.replace(/[^\/]*/, "")
-    dominio = dominio.replace(/[^\w\.\+-:@]/g, "")
-    caminho = caminho.replace(/[^\w\d\+-@:\?&=%\(\)\.]/g, "")
-    caminho = caminho.replace(/([\?&])=/, "$1")
-    if (caminho != "") 
-        dominio = dominio.replace(/\.+$/, "")
-    v = "http://" + dominio + caminho
-    return v
-}
 
-
-function limitText(limit, limitNum){
-    if (limit.length > limitNum) {
-        return limit.substring(0, limitNum);
-    }
-}

@@ -41,3 +41,7 @@ Changelog
 1.1.6	-2012-10-08
 --------------------
 - Alteração da mensagem de confirmação da reserva.
+
+1.1.7	-2012-10-25
+--------------------
+- Reformulação de frase 

@@ -37,7 +37,7 @@ def CreatElemetsFormReserve(context, event):
     objects = {'type_name':'Topic',
                'id': 'calendario',
                'title':'Calendário',
-               'description':'Calendário de reservas corporativa da intranet.'}
+               'description':'Calendário de Reservas Coporativas.'}
 
     context.invokeFactory(**objects)  
     
