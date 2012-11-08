@@ -3,7 +3,8 @@ from zope.interface import implements
 from Products.CMFCore.utils import getToolByName
 from vindula.reservacorporativa import MessageFactory as _
 from Products.Archetypes.atapi import *
-from Products.ATContentTypes.content.folder import ATFolder
+#from Products.ATContentTypes.content.folder import ATFolder
+from plone.app.folder.folder import ATFolder
 from Products.ATContentTypes.content.schemata import finalizeATCTSchema
 from vindula.reservacorporativa.config import *
 

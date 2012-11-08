@@ -45,3 +45,7 @@ Changelog
 1.1.7	-2012-10-25
 --------------------
 - Reformulação de frase 
+
+1.1.8 - 2012-11-08
+------------------------
+- Remoção da aba Blog na reserva corporativa
