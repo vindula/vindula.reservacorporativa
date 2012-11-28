@@ -124,4 +124,8 @@ function FormataCnpj(campo, teclapres){
     }
 }
 
-
+function limitText(limit, limitNum) {
+        if (limit.length > limitNum) {
+            return limit.substring(0, limitNum);
+    }     
+}
