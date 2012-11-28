@@ -39,8 +39,8 @@
 			
 			<div id="my-reservations">
 				<form class="buttonsReservations" tal:attributes="action string: ${context/absolute_url}/my-reservations" method="post">
-					<input class="comments bt_comments" type="submit" value="Anteriores" name="prev_reservations">
-					<input class="comments bt_comments" type="submit" value="Próximas" name="next_reservations">
+					<input class="comments bt_reservas" type="submit" value="Anteriores" name="prev_reservations">
+					<input class="comments bt_reservas" type="submit" value="Próximas" name="next_reservations">
 				</form>
 				
 				<tal:cond tal:condition="reservations">

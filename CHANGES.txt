@@ -49,3 +49,7 @@ Changelog
 1.1.8 - 2012-11-08
 ------------------------
 - Remoção da aba Blog na reserva corporativa
+
+1.1.8 - 2012-11-28
+------------------------
+- Adicionando classe para os botões Anteriores e Próximas da área Minhas Reservas
