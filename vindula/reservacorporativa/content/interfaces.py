@@ -6,3 +6,6 @@ class IContentReserve(Interface):
 
 class IBlockReserve(Interface):
     """ Interface for BlockReserve content type """
+
+class IEventReserve(Interface):
+    """ Interface for EventReserve content type """

@@ -26,9 +26,10 @@ function getHoursSelected(hours_selected){
     return events;
 }
 
-$j(document).ready(function(){
+// $j(document).ready(function(){
 
 	/* LIST AVAILABLE TIMES */
+
 	
 	$j('#available-times #day span').click(function() {
 		var list = $j(this).parent().find('ul');
@@ -98,4 +99,4 @@ $j(document).ready(function(){
 		}
 	})
 
-});
+// });

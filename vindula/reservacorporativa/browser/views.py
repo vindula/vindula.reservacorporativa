@@ -59,6 +59,7 @@ class ReserveInformationView(grok.View):
                 D['mult_horarios'] = obj.mult_horarios
                 D['duration'] = obj.duration.strftime('%H:%M')
                 D['hours'] = self.getAvailableTimes(obj)
+                D['context'] = obj
                 return D
             
     def getAvailableTimes(self, obj):
@@ -107,7 +108,7 @@ class ReserveInformationView(grok.View):
             end = DateTime((days[len(days)-1]['day'] + datetime.timedelta(days=1)).strftime('%Y/%m/%d'))
             
             # Search events within the range
-            booked_slots = pc(portal_type='Event',
+            booked_slots = pc(portal_type=('Event','EventReserve'),
                               #review_state='published',
                               path='/'.join(folder.getPhysicalPath()),
                               start={'query':[start, end], 'range':'minmax'})
@@ -239,6 +240,20 @@ class ReserveInformationView(grok.View):
                         start = hour_selected['start']
                         end   = hour_selected['end']
                         id = username + '-' + date.strftime('%d-%m-%Y') + (start + end).replace(':', '')
+
+                        if form.get('recurrent', False):
+                            form['recurrent'] = True
+                        else:
+                            form['recurrent'] = False
+
+                        if form.get('end_date', False):
+                            end_date = form.get('end_date','')
+                            try:
+                                end_date = end_date.split('/')
+                                form['end_date'] = DateTime(int(end_date[2],end_date[1],end_date[0]))
+                            except:
+                                form['end_date'] = None
+
                         self.context.createObj(folder,id,title,date.strftime('%m-%d-%Y'),start,end,form)
                         self.context.publishObj(folder[id])
                         
@@ -293,9 +308,14 @@ class ReserveInformationView(grok.View):
         D['phone'] = '' 
         D['local'] = ''
         D['id_edit'] = ''
+
+        D['recurrent'] = ''
+        D['frequency'] = ''
+        D['end_date'] = ''
+
         if form.get('id_edit'):
             pc = getToolByName(self.context, 'portal_catalog')
-            reserve_edit = pc(portal_type='Event', id=form.get('id_edit'))
+            reserve_edit = pc(portal_type=('Event','EventReserve'), id=form.get('id_edit'))
             if reserve_edit:
                 obj = reserve_edit[0].getObject()
                 D['name'] = obj.contact_name()
@@ -304,6 +324,12 @@ class ReserveInformationView(grok.View):
                 D['obs'] = obj.Description()
                 D['local'] = obj.getLocation()
                 D['id_edit'] = obj.id
+
+                if obj.portal_type == 'EventReserve':
+                    D['recurrent'] = obj.getRecurrent()
+                    D['frequency'] = obj.getFrequency()
+                    D['end_date'] = obj.getEnd_dateRecurrent()
+
         else:
             ms = self.context.portal_membership
             user_login = ms.getAuthenticatedMember().getUserName()
@@ -337,7 +363,7 @@ class MyReservationsView(grok.View):
         form = self.request.form
         
         if form.get('delete-ev'):
-            event_delete =  pc(portal_type='Event', id=self.request.form.get('delete-ev'))
+            event_delete =  pc(portal_type=('Event','EventReserve'), id=self.request.form.get('delete-ev'))
             if event_delete:
                 event_delete = event_delete[0].getObject()
                 id = event_delete.id
@@ -356,7 +382,7 @@ class MyReservationsView(grok.View):
         else:
             date_range_query = { 'query': DateTime(), 'range': 'min'}
         query['Creator'] = user_login
-        query['portal_type'] = 'Event'
+        query['portal_type'] = ('Event','EventReserve')
         query['review_state'] = 'published'
         query['start'] = date_range_query
         query['sort_on'] = 'start'
@@ -368,6 +394,8 @@ class MyReservationsView(grok.View):
                 obj = obj.getObject()
                 if obj.aq_parent.Type() == 'Reserva Corporativa':
                     reservations.append(obj)
+        
+
         return reservations
     
 class ReservationPrintView(grok.View):
@@ -380,7 +408,7 @@ class ReservationPrintView(grok.View):
         folder_path = '/'.join(self.context.aq_parent.getPhysicalPath())
         query={}
 
-        query['portal_type'] = 'Event'
+        query['portal_type'] = ('Event','EventReserve')
         query['review_state'] = 'published'
         query['start'] = {'query': DateTime().Date(), 'range': 'min'}
         query['sort_on'] = 'start'

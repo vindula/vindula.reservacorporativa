@@ -43,7 +43,13 @@ class IReserve(form.Schema):
         description=_(u"Selecione se essa reserva irá permitir que o usuário selecione mais de um horário por reserva."),
         required=False,
         )
-    
+
+    recurrent = schema.Bool(
+        title=_(u"Permitir agendamento recorrente"),
+        description=_(u"Selecione se essa reserva irá permitir que o usuário um agendamento recorrente nessa reserva."),
+        required=False,
+        )
+        
     replic_semana = schema.Bool(
         title=_(u"Replicar na semana"),
         description=_(u"Selecione esta opção caso haja reservas disponíveis para todos os dias da semana, informando nos campos abaixo os horários de inicio e término.\

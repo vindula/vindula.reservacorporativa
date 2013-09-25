@@ -9,7 +9,7 @@
 ##
 
 
-folder.invokeFactory('Event', 
+folder.invokeFactory('EventReserve', 
                         id=id, 
                         title=title, 
                         description=form.get('obs'), 
@@ -22,3 +22,8 @@ folder.invokeFactory('Event',
                         contact_phone=form.get('phone'),
                         contact_email=form.get('mail'))
 
+event = folder[id]
+event.setRecurrent(form.get('recurrent'))
+event.setFrequency(form.get('frequency'))
+event.setEnd_dateRecurrent(form.get('end_date'))
+event.reindexObject()

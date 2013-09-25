@@ -1,30 +1,28 @@
 <?xml version="1.0"?>
-<object name="ContentReserve"
+<object name="EventReserve"
         meta_type="Factory-based Type Information with dynamic views"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
    	
-<property name="title">Vindula Reserva Corporativa</property>
- <property name="description">Adiciona um tipo de vindula reserva corporativa.</property>
- <property name="content_icon">/++resource++vindula.reservacorporativa/reserve.png</property>
- <property name="content_meta_type">ContentReserve</property>
+<property name="title">Vindula Evento para Reserva Corporativa</property>
+ <property name="description">Adiciona um tipo de vindula evento reserva corporativa.</property>
+ <property name="content_icon">/++resource++vindula.reservacorporativa/event_edit_icon.png</property>
+ <property name="content_meta_type">EventReserve</property>
  <property name="product">vindula.reservacorporativa</property>
- <property name="factory">addContentReserve</property>
- <property name="immediate_view">view</property>
- <property name="global_allow">True</property>
+ <property name="factory">addEventReserve</property>
+ <property name="immediate_view">base_view</property>
+ <property name="global_allow">False</property>
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types">
-   <element value="Event"/>
-   <element value="Event"/>
-   <element value="vindula.reservacorporativa.content.reserve"/>
-   <element value="Topic"/>
+
  </property>
  <property name="allow_discussion">False</property>
- <property name="default_view">view</property>
+ <property name="default_view">base_view</property>
  <property name="default_view_fallback">False</property>
- <alias from="(Default)" to="view"/>
+ <alias from="(Default)" to="base_view"/>
  <alias from="index.html" to="(dynamic view)"/>
  <alias from="view" to="(selected layout)"/>
  <alias from="edit" to="base_edit"/>
+ 
  <action title="View" 
          action_id="view"
          category="object" 
@@ -33,6 +31,7 @@
          visible="True">
   <permission value="View"/>
  </action>
+ 
  <action title="Edit" 
          action_id="edit"
          category="object" 
@@ -41,4 +40,5 @@
          visible="True">
   <permission value="Modify portal content"/>
  </action>
+
 </object>
