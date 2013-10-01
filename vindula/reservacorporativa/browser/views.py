@@ -11,6 +11,8 @@ from zope.app.component.hooks import getSite
 #Importando a classe para pegar os dados do usuário do BD
 from vindula.myvindula.tools.utils import UtilMyvindula
 
+from datetime import timedelta
+
 class ReservationRequestView(grok.View):
     grok.context(IContentReserve)
     grok.require('zope2.View')
@@ -119,6 +121,12 @@ class ReserveInformationView(grok.View):
                               path='/'.join(folder.getPhysicalPath())
                               )
 
+            #Booked Events Recorentes
+            events_recorents_slots = pc(portal_type=('Event','EventReserve'),
+                                        getRecurrent=True,
+                                        path='/'.join(folder.getPhysicalPath()),
+                                        start={'query':[start, end], 'range':'minmax'})
+
             for day in days:
                 # Checking it day
                 checked_day = {}
@@ -177,6 +185,56 @@ class ReserveInformationView(grok.View):
                                     #Checando se a regra de bloqueio comeca e termina antes do slot ou se a regra de bloqueio comece depois do fim do slot
                                     #Se um dos casos for positivo, slot esta ocupado
                                     slot_free = self.checkStartAndEndSlot(slot_start, slot_end, block_start, block_end)
+
+                    if slot_free:
+                        dt_start = day.get('day')
+
+                        for obj in events_recorents_slots:
+                            obj = obj.getObject()
+
+                            frequencia = obj.getFrequency()
+                            data_reserva = obj.start_date.date() #.replace(tzinfo=None)
+                            # data_reserva_end = obj.end_date.date()
+                            
+                            hora_reserva_start = obj.start_date.time()
+                            hora_reserva_end = obj.end_date.time()
+                            
+                            stop_recurrent = obj.end_dateRecurrent
+                            
+                            if stop_recurrent:
+                                stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
+                                stop_recurrent = stop_recurrent.date() #.replace(tzinfo=None)
+
+                            def checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end):
+                                if not stop_recurrent:
+                                    if slot_free:
+                                        slot_free = self.checkStartAndEndSlot(slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+      
+                                elif data_reserva < stop_recurrent:
+                                    if slot_free:
+                                        slot_free = self.checkStartAndEndSlot(slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+                                return slot_free
+
+                            if frequencia == 'semanal':
+
+                                while data_reserva < dt_start:
+                                    data_reserva = data_reserva + timedelta(days=7)
+                                    if data_reserva == dt_start:
+                                        slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+                                        
+                            elif frequencia == 'quinzenal': 
+
+                                while data_reserva < dt_start:
+                                    data_reserva = data_reserva + timedelta(days=14)
+                                    if data_reserva == dt_start:
+                                        slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+
+                            elif frequencia == 'mensal':
+                                
+                                while data_reserva < dt_start:
+                                    data_reserva = data_reserva + timedelta(days=30)
+                                    if data_reserva == dt_start:
+                                        slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
 
                     if slot_free:
                         checked_day['hours'].append(slot)
@@ -247,10 +305,11 @@ class ReserveInformationView(grok.View):
                             form['recurrent'] = False
 
                         if form.get('end_date', False):
+
                             end_date = form.get('end_date','')
                             try:
                                 end_date = end_date.split('/')
-                                form['end_date'] = DateTime(int(end_date[2],end_date[1],end_date[0]))
+                                form['end_date'] = DateTime(int(end_date[2]),int(end_date[1]),int(end_date[0]))
                             except:
                                 form['end_date'] = None
 
