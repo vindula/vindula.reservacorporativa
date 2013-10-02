@@ -11,6 +11,7 @@ from zope.app.component.hooks import getSite
 #Importando a classe para pegar os dados do usuário do BD
 from vindula.myvindula.tools.utils import UtilMyvindula
 
+from dateutil.relativedelta import relativedelta
 from datetime import timedelta
 
 class ReservationRequestView(grok.View):
@@ -232,7 +233,7 @@ class ReserveInformationView(grok.View):
                             elif frequencia == 'mensal':
                                 
                                 while data_reserva < dt_start:
-                                    data_reserva = data_reserva + timedelta(days=30)
+                                    data_reserva = data_reserva + relativedelta(months=+1)
                                     if data_reserva == dt_start:
                                         slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
 
@@ -307,11 +308,13 @@ class ReserveInformationView(grok.View):
                         if form.get('end_date', False):
 
                             end_date = form.get('end_date','')
-                            try:
-                                end_date = end_date.split('/')
-                                form['end_date'] = DateTime(int(end_date[2]),int(end_date[1]),int(end_date[0]))
-                            except:
-                                form['end_date'] = None
+                            if not isinstance(end_date, DateTime):
+                                try:
+                                    end_date = end_date.split('/')
+                                    form['end_date'] = DateTime(int(end_date[2]),int(end_date[1]),int(end_date[0]))
+                                except:
+                                    form['end_date'] = None
+
 
                         self.context.createObj(folder,id,title,date.strftime('%m-%d-%Y'),start,end,form)
                         self.context.publishObj(folder[id])
