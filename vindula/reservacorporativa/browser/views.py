@@ -58,6 +58,7 @@ class ReserveInformationView(grok.View):
                 D['description'] = obj.description
                 D['local'] = obj.local
                 D['contact'] = obj.contact
+                D['additional_items'] = obj.additional_items
                 D['frequency'] = obj.frequency
                 D['mult_horarios'] = obj.mult_horarios
                 D['duration'] = obj.duration.strftime('%H:%M')
@@ -315,6 +316,12 @@ class ReserveInformationView(grok.View):
                                 except:
                                     form['end_date'] = None
 
+                        if folder.additional_items:
+                            txt = ''
+                            for item in folder.additional_items:
+                                txt += '%s: %s \n'%(item.get('label',''),form.get(item.get('name','')))
+
+                            form['text'] = txt
 
                         self.context.createObj(folder,id,title,date.strftime('%m-%d-%Y'),start,end,form)
                         self.context.publishObj(folder[id])
@@ -366,6 +373,7 @@ class ReserveInformationView(grok.View):
         D = {}
         D['name'] = ''
         D['obs'] = ''
+        D['qtd_pessoas']=''
         D['mail'] = ''
         D['phone'] = '' 
         D['local'] = ''
@@ -386,6 +394,7 @@ class ReserveInformationView(grok.View):
                 D['obs'] = obj.Description()
                 D['local'] = obj.getLocation()
                 D['id_edit'] = obj.id
+                D['qtd_pessoas'] = obj.getAttendees()
 
                 if obj.portal_type == 'EventReserve':
                     D['recurrent'] = obj.getRecurrent()

@@ -23,6 +23,11 @@ folder.invokeFactory('EventReserve',
                         contact_email=form.get('mail'))
 
 event = folder[id]
+#Campos de OBS, e Quantidade de pessoas
+event.setText(form.get('text','')),
+event.setAttendees([form.get('qtd_pessoas')]),
+
+#Campos da Recursividade
 event.setRecurrent(form.get('recurrent'))
 event.setFrequency(form.get('frequency'))
 event.setEnd_dateRecurrent(form.get('end_date'))

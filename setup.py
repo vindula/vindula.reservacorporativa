@@ -27,6 +27,7 @@ setup(name='vindula.reservacorporativa',
       install_requires=[
           'setuptools',
           'plone.app.dexterity',
+          'collective.z3cform.datagridfield'
           # -*- Extra requirements: -*-
       ],
       entry_points="""
