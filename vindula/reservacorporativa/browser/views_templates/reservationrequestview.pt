@@ -12,7 +12,7 @@
 			<script type="text/javascript" tal:attributes="src string:${context/absolute_url}/++resource++vindula.reservacorporativa/mascaras.js"></script>
         </metal:js>    
      	<metal:css fill-slot="style_slot">
-            <link rel="stylesheet" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/corporate_reserves.css" />
+            <link rel="stylesheet" id="new-theme" type="text/css" tal:attributes="href string:++resource++vindula.reservacorporativa/corporate_reserves.css" />
         </metal:css>
 	</head>
 	  	

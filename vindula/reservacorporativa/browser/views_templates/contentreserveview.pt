@@ -16,14 +16,14 @@
 		<metal:main fill-slot="content-core">
 			<div class="reserve-view" tal:define="member python:context.portal_membership.getAuthenticatedMember();
 					  							  altenticado python:str(member)!='Anonymous User';">
-				<div class="row">
-					<div class="cell width-8 position-0">
+				<div class="row" style="padding-top: 10px;">
+					<div class="columns large-6">
 						<a class="internal-link"  tal:attributes="href string:${context/absolute_url|nothing}/calendario">
 							<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/calendario.jpeg" style="float:left; " />
 							<p>Clique aqui para visualizar o calendário de reservas.</p>
 						</a>	
 					</div>
-					<div class="cell width-8 position-8">
+					<div class="columns large-6">
 						<tal:cont condition="altenticado">
 							<a class="external-link" tal:attributes="href string:${context/absolute_url|nothing}/reservation-request">
 								<img class="image-inline" tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.reservacorporativa/reservacorporativo.jpeg" style="float:left;" />

@@ -24,14 +24,14 @@
 							<span tal:content="string: ${day/label}">17/12/11, segunda</span>
 							<input type="hidden" class="date" tal:attributes="value day/day"/>
 							<ul>
-								<li tal:repeat="hour day/hours">
-									<span tal:content="hour/label">09:00 as 13:00</span>
-									<input type="hidden" class="start" tal:attributes="value hour/start"/>
-									<input type="hidden" class="end" tal:attributes="value hour/end"/>
-									<input name="hours-selected:list" class="display-none hours-selected"
-										   tal:define="type_check python: reserve['mult_horarios'] and 'checkbox' or 'radio'"
-										   tal:attributes="value python: '%s|%s|%s' % (day['day'].strftime('%d-%m-%Y'), hour['start'], hour['end']);
-														   type type_check"/>
+								<li tal:repeat="hour day/hours" class="clear">
+							        <span tal:content="hour/label">09:00 as 13:00</span>
+                                    <input type="hidden" class="start" tal:attributes="value hour/start"/>
+                                    <input type="hidden" class="end" tal:attributes="value hour/end"/>
+                                    <input name="hours-selected:list" class="hide hours-selected"
+                                           tal:define="type_check python: reserve['mult_horarios'] and 'checkbox' or 'radio'"
+                                           tal:attributes="value python: '%s|%s|%s' % (day['day'].strftime('%d-%m-%Y'), hour['start'], hour['end']);
+                                                           type type_check"/>
 								</li>
 							</ul>
 						</div>
