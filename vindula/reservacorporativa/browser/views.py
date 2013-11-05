@@ -128,7 +128,6 @@ class ReserveInformationView(grok.View):
                                         getRecurrent=True,
                                         path='/'.join(folder.getPhysicalPath()),
                                         start={'query':[start, end], 'range':'minmax'})
-
             for day in days:
                 # Checking it day
                 checked_day = {}
@@ -174,8 +173,8 @@ class ReserveInformationView(grok.View):
                                 mod = obj.getWhen().month() % 2
                                 block_slot = not DateTime(day.get('day').strftime('%Y-%m-%d')).month() % 2 == mod
                             
-                            if DateTime(day.get('day').strftime('%Y-%m-%d')) >= obj.getWhen() and \
-                               DateTime(day.get('day').strftime('%Y-%m-%d')) <= obj.getEven_when() and \
+                            if DateTime(day.get('day').strftime('%Y-%m-%d')) >= DateTime(obj.getWhen().strftime('%Y-%m-%d')) and \
+                               DateTime(day.get('day').strftime('%Y-%m-%d')) <= DateTime(obj.getEven_when().strftime('%Y-%m-%d')) and \
                                long_date in block_days_of_week and \
                                block_slot:
                                 
@@ -193,7 +192,7 @@ class ReserveInformationView(grok.View):
 
                         for obj in events_recorents_slots:
                             obj = obj.getObject()
-
+ 
                             frequencia = obj.getFrequency()
                             data_reserva = obj.start_date.date() #.replace(tzinfo=None)
                             # data_reserva_end = obj.end_date.date()

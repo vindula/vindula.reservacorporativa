@@ -50,6 +50,7 @@ class IReserve(form.Schema):
     form.widget(additional_items=DataGridFieldFactory)
     additional_items = schema.List(title=u"Itens da reserva corporativa",
                         description=_(u"Informe os itens que podem conter na reserva corporativa."),
+                        required=False,
                         value_type=DictRow(title=u"Itens", schema=ITableRowSchema))
 
 
