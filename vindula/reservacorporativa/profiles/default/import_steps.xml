@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<import-steps>
+
+	<import-step id="vindula.controlpanel.installControlPanel" 
+				 version="1.0"
+                 handler="vindula.reservacorporativa.setuphandlers.installReservaCorporativa"
+                 title="Create Vindula Reserva Corporativa">
+		
+		<!-- <dependency step="content"/> -->
+		<!--dependency step="typeinfo"/-->
+	</import-step>
+	
+
+</import-steps>

@@ -49,7 +49,9 @@ def CreatElemetsFormReserve(context, event):
         except:portal_workflow.doActionFor(colection, 'publish_internally') 
                 
         theCriteria = colection.addCriterion('Type','ATSelectionCriterion')
-        theCriteria.setValue("Event")
+        # theCriteria = colection.addCriterion('Type','ATListCriterion')
+        # theCriteria.setValue(["EventReserve","Event"])
+        theCriteria.setValue(["Vindula Evento para Reserva Corporativa","Event"])
         
         theCriteria = colection.addCriterion('path','ATPathCriterion')
         theCriteria.setValue(context)
@@ -60,7 +62,4 @@ def CreatElemetsFormReserve(context, event):
         #theCriteria.setOperator('and')
         
         colection.setLayout('solgemafullcalendar_view')
-        
-        
-
-
+             

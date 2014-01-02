@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.0a3'
+version = '2.0'
 
 setup(name='vindula.reservacorporativa',
       version=version,
@@ -27,6 +27,7 @@ setup(name='vindula.reservacorporativa',
       install_requires=[
           'setuptools',
           'plone.app.dexterity',
+          'collective.z3cform.datagridfield'
           # -*- Extra requirements: -*-
       ],
       entry_points="""

@@ -8,12 +8,20 @@ from vindula.reservacorporativa import MessageFactory as _
 
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent, IObjectCreatedEvent
 
+from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
+
+
+
+class ITableRowSchema(form.Schema):
+
+    name = schema.TextLine(title=u"Nome do campo")
+    label = schema.TextLine(title=u"Titulo do campo")
+    values = schema.Text(title=u"Valores do campo")
+
 
 # Interface and schema
-
 class IReserve(form.Schema):
     """ Reserve Folder for Events """
-
     
     frequency = schema.Choice(
         title=_(u"Frequência"),
@@ -38,12 +46,26 @@ class IReserve(form.Schema):
         required=False,
         )
     
+
+    form.widget(additional_items=DataGridFieldFactory)
+    additional_items = schema.List(title=u"Itens da reserva corporativa",
+                        description=_(u"Informe os itens que podem conter na reserva corporativa."),
+                        required=False,
+                        value_type=DictRow(title=u"Itens", schema=ITableRowSchema))
+
+
     mult_horarios = schema.Bool(
         title=_(u"Permitir mais de um horário"),
         description=_(u"Selecione se essa reserva irá permitir que o usuário selecione mais de um horário por reserva."),
         required=False,
         )
-    
+
+    recurrent = schema.Bool(
+        title=_(u"Permitir agendamento recorrente"),
+        description=_(u"Selecione se essa reserva irá permitir que o usuário um agendamento recorrente nessa reserva."),
+        required=False,
+        )
+        
     replic_semana = schema.Bool(
         title=_(u"Replicar na semana"),
         description=_(u"Selecione esta opção caso haja reservas disponíveis para todos os dias da semana, informando nos campos abaixo os horários de inicio e término.\

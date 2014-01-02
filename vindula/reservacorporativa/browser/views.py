@@ -11,6 +11,9 @@ from zope.app.component.hooks import getSite
 #Importando a classe para pegar os dados do usuário do BD
 from vindula.myvindula.tools.utils import UtilMyvindula
 
+from dateutil.relativedelta import relativedelta
+from datetime import timedelta
+
 class ReservationRequestView(grok.View):
     grok.context(IContentReserve)
     grok.require('zope2.View')
@@ -55,10 +58,12 @@ class ReserveInformationView(grok.View):
                 D['description'] = obj.description
                 D['local'] = obj.local
                 D['contact'] = obj.contact
+                D['additional_items'] = obj.additional_items
                 D['frequency'] = obj.frequency
                 D['mult_horarios'] = obj.mult_horarios
                 D['duration'] = obj.duration.strftime('%H:%M')
                 D['hours'] = self.getAvailableTimes(obj)
+                D['context'] = obj
                 return D
             
     def getAvailableTimes(self, obj):
@@ -107,7 +112,7 @@ class ReserveInformationView(grok.View):
             end = DateTime((days[len(days)-1]['day'] + datetime.timedelta(days=1)).strftime('%Y/%m/%d'))
             
             # Search events within the range
-            booked_slots = pc(portal_type='Event',
+            booked_slots = pc(portal_type=('Event','EventReserve'),
                               #review_state='published',
                               path='/'.join(folder.getPhysicalPath()),
                               start={'query':[start, end], 'range':'minmax'})
@@ -118,6 +123,11 @@ class ReserveInformationView(grok.View):
                               path='/'.join(folder.getPhysicalPath())
                               )
 
+            #Booked Events Recorentes
+            events_recorents_slots = pc(portal_type=('Event','EventReserve'),
+                                        getRecurrent=True,
+                                        path='/'.join(folder.getPhysicalPath()),
+                                        start={'query':[start, end], 'range':'minmax'})
             for day in days:
                 # Checking it day
                 checked_day = {}
@@ -163,8 +173,8 @@ class ReserveInformationView(grok.View):
                                 mod = obj.getWhen().month() % 2
                                 block_slot = not DateTime(day.get('day').strftime('%Y-%m-%d')).month() % 2 == mod
                             
-                            if DateTime(day.get('day').strftime('%Y-%m-%d')) >= obj.getWhen() and \
-                               DateTime(day.get('day').strftime('%Y-%m-%d')) <= obj.getEven_when() and \
+                            if DateTime(day.get('day').strftime('%Y-%m-%d')) >= DateTime(obj.getWhen().strftime('%Y-%m-%d')) and \
+                               DateTime(day.get('day').strftime('%Y-%m-%d')) <= DateTime(obj.getEven_when().strftime('%Y-%m-%d')) and \
                                long_date in block_days_of_week and \
                                block_slot:
                                 
@@ -176,6 +186,56 @@ class ReserveInformationView(grok.View):
                                     #Checando se a regra de bloqueio comeca e termina antes do slot ou se a regra de bloqueio comece depois do fim do slot
                                     #Se um dos casos for positivo, slot esta ocupado
                                     slot_free = self.checkStartAndEndSlot(slot_start, slot_end, block_start, block_end)
+
+                    if slot_free:
+                        dt_start = day.get('day')
+
+                        for obj in events_recorents_slots:
+                            obj = obj.getObject()
+ 
+                            frequencia = obj.getFrequency()
+                            data_reserva = obj.start_date.date() #.replace(tzinfo=None)
+                            # data_reserva_end = obj.end_date.date()
+                            
+                            hora_reserva_start = obj.start_date.time()
+                            hora_reserva_end = obj.end_date.time()
+                            
+                            stop_recurrent = obj.end_dateRecurrent
+                            
+                            if stop_recurrent:
+                                stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
+                                stop_recurrent = stop_recurrent.date() #.replace(tzinfo=None)
+
+                            def checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end):
+                                if not stop_recurrent:
+                                    if slot_free:
+                                        slot_free = self.checkStartAndEndSlot(slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+      
+                                elif data_reserva < stop_recurrent:
+                                    if slot_free:
+                                        slot_free = self.checkStartAndEndSlot(slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+                                return slot_free
+
+                            if frequencia == 'semanal':
+
+                                while data_reserva < dt_start:
+                                    data_reserva = data_reserva + timedelta(days=7)
+                                    if data_reserva == dt_start:
+                                        slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+                                        
+                            elif frequencia == 'quinzenal': 
+
+                                while data_reserva < dt_start:
+                                    data_reserva = data_reserva + timedelta(days=14)
+                                    if data_reserva == dt_start:
+                                        slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
+
+                            elif frequencia == 'mensal':
+                                
+                                while data_reserva < dt_start:
+                                    data_reserva = data_reserva + relativedelta(months=+1)
+                                    if data_reserva == dt_start:
+                                        slot_free = checkSlotRecursive(self,slot_free, data_reserva,stop_recurrent, slot_start, slot_end, hora_reserva_start, hora_reserva_end)
 
                     if slot_free:
                         checked_day['hours'].append(slot)
@@ -239,6 +299,29 @@ class ReserveInformationView(grok.View):
                         start = hour_selected['start']
                         end   = hour_selected['end']
                         id = username + '-' + date.strftime('%d-%m-%Y') + (start + end).replace(':', '')
+
+                        if form.get('recurrent', False):
+                            form['recurrent'] = True
+                        else:
+                            form['recurrent'] = False
+
+                        if form.get('end_date', False):
+
+                            end_date = form.get('end_date','')
+                            if not isinstance(end_date, DateTime):
+                                try:
+                                    end_date = end_date.split('/')
+                                    form['end_date'] = DateTime(int(end_date[2]),int(end_date[1]),int(end_date[0]))
+                                except:
+                                    form['end_date'] = None
+
+                        if folder.additional_items:
+                            txt = ''
+                            for item in folder.additional_items:
+                                txt += '%s: %s \n'%(item.get('label',''),form.get(item.get('name','')))
+
+                            form['text'] = txt
+
                         self.context.createObj(folder,id,title,date.strftime('%m-%d-%Y'),start,end,form)
                         self.context.publishObj(folder[id])
                         
@@ -289,13 +372,19 @@ class ReserveInformationView(grok.View):
         D = {}
         D['name'] = ''
         D['obs'] = ''
+        D['qtd_pessoas']=''
         D['mail'] = ''
         D['phone'] = '' 
         D['local'] = ''
         D['id_edit'] = ''
+
+        D['recurrent'] = ''
+        D['frequency'] = ''
+        D['end_date'] = ''
+
         if form.get('id_edit'):
             pc = getToolByName(self.context, 'portal_catalog')
-            reserve_edit = pc(portal_type='Event', id=form.get('id_edit'))
+            reserve_edit = pc(portal_type=('Event','EventReserve'), id=form.get('id_edit'))
             if reserve_edit:
                 obj = reserve_edit[0].getObject()
                 D['name'] = obj.contact_name()
@@ -304,6 +393,13 @@ class ReserveInformationView(grok.View):
                 D['obs'] = obj.Description()
                 D['local'] = obj.getLocation()
                 D['id_edit'] = obj.id
+                D['qtd_pessoas'] = obj.getAttendees()
+
+                if obj.portal_type == 'EventReserve':
+                    D['recurrent'] = obj.getRecurrent()
+                    D['frequency'] = obj.getFrequency()
+                    D['end_date'] = obj.getEnd_dateRecurrent()
+
         else:
             ms = self.context.portal_membership
             user_login = ms.getAuthenticatedMember().getUserName()
@@ -337,7 +433,7 @@ class MyReservationsView(grok.View):
         form = self.request.form
         
         if form.get('delete-ev'):
-            event_delete =  pc(portal_type='Event', id=self.request.form.get('delete-ev'))
+            event_delete =  pc(portal_type=('Event','EventReserve'), id=self.request.form.get('delete-ev'))
             if event_delete:
                 event_delete = event_delete[0].getObject()
                 id = event_delete.id
@@ -356,7 +452,7 @@ class MyReservationsView(grok.View):
         else:
             date_range_query = { 'query': DateTime(), 'range': 'min'}
         query['Creator'] = user_login
-        query['portal_type'] = 'Event'
+        query['portal_type'] = ('Event','EventReserve')
         query['review_state'] = 'published'
         query['start'] = date_range_query
         query['sort_on'] = 'start'
@@ -368,6 +464,8 @@ class MyReservationsView(grok.View):
                 obj = obj.getObject()
                 if obj.aq_parent.Type() == 'Reserva Corporativa':
                     reservations.append(obj)
+        
+
         return reservations
     
 class ReservationPrintView(grok.View):
@@ -380,7 +478,7 @@ class ReservationPrintView(grok.View):
         folder_path = '/'.join(self.context.aq_parent.getPhysicalPath())
         query={}
 
-        query['portal_type'] = 'Event'
+        query['portal_type'] = ('Event','EventReserve')
         query['review_state'] = 'published'
         query['start'] = {'query': DateTime().Date(), 'range': 'min'}
         query['sort_on'] = 'start'

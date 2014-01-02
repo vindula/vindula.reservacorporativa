@@ -54,15 +54,54 @@
 							   onKeyUp="Mascara(this, Telefone);" onKeyDown="Mascara(this, Telefone);" onKeyPress="Mascara(this, Telefone);"/>
 						<span>Observa&ccedil;&otilde;es</span>
 						<textarea name="obs" cols="10" rows="3" tal:content="edit_event/obs|nothing" /><p />
+
+						<span>Quantidade de Pessoas</span>
+						<input type="text" name="qtd_pessoas" size="10" tal:attributes="value python: edit_event['qtd_pessoas'] or None" /><p />
+
+						<tal:rep repeat="item reserve/additional_items|python:[]">
+							<span tal:content="item/label|string: ">TV</span>
+							<select name="tv" id="tv" tal:attributes="name item/name|string: ;
+																	  id item/name|string: ;">
+
+									<tal:rep repeat="opt python: item['values'].splitlines()">
+										<option value="" tal:attributes="value opt"
+														 tal:content="opt">SIM</option>
+									</tal:rep>
+
+							</select>
+							<p />
+						</tal:rep>
+
+						<tal:cond condition="reserve/context/recurrent|python:False">
+							<span>Reserva Recorente</span>
+							<input type="checkbox" name="recurrent" value="True" tal:attributes="checked python: edit_event['recurrent'] and 'checked' or ''" />
+							<label for="recurrent">Marque essa opção para criar uma reserva recorente</label>
+							<br/>
+
+							<span>Frequência da reserva</span>
+							<select name="frequency" id="frequency" tal:define="frequency edit_event/frequency|string:unico">
+								
+								<option value="unico" tal:attributes="selected python: frequency=='unico' and 'selected' or ''">Evento sem repedição</option>
+								<option value="semanal" tal:attributes="selected python: frequency=='semanal' and 'selected' or ''">Evento Semanal</option>
+								<option value="quinzenal" tal:attributes="selected python: frequency=='quinzenal' and 'selected' or ''">Evento Quinzenal</option>
+								<option value="mensal" tal:attributes="selected python: frequency=='mensal' and 'selected' or ''">Evento Mensal</option>
+
+							</select>
+
+							<span>Data de termino</span>
+							<input type="text" name="end_date" size="10" tal:attributes="value edit_event/end_date|nothing"
+							   onKeyUp="Mascara(this, Data);" onKeyDown="Mascara(this, Data);" onKeyPress="Mascara(this, Data);"/>
+							
+							<br/>
+
+						</tal:cond>
+						
 						<input type="submit" name="create_event" value="Agendar" disabled="true" />
 						<input type="hidden" name="local" tal:attributes="value python: edit_event['local'] or reserve['local'] or None"/>
 						<input type="hidden" name="obj_path" tal:attributes="value reserve/obj_path"/>
 						<input type="hidden" name="edit_event" tal:condition="edit_event" tal:attributes="value edit_event/id_edit|nothing">
 				</div>
 			</div>
-			
 		</form>
-		
 	</tal:condition>	
-	
 </div>

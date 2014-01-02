@@ -9,4 +9,7 @@
   <object name="BlockReserve"	
 			meta_type="Factory-based Type Information with dynamic views"/> 
  
+ <object name="EventReserve"	
+			meta_type="Factory-based Type Information with dynamic views"/> 
+			
 </object>
