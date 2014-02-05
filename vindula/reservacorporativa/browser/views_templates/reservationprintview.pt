@@ -89,6 +89,10 @@
 							<label>Descrição da reserva:</label><br>
 							<p class="description" tal:content="item/Description|nothing">description</p>
 						</div>
+						<div tal:condition="item/getText">
+							<label>Opções da reserva:</label><br>
+							<p class="description" tal:content="structure: item/getText|nothing">Text</p>
+						</div>
 					</dd>
 				</dl>				
 			</tal:rep>

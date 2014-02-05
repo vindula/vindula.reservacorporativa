@@ -55,8 +55,10 @@
 						<span>Observa&ccedil;&otilde;es</span>
 						<textarea name="obs" cols="10" rows="3" tal:content="edit_event/obs|nothing" /><p />
 
-						<span>Quantidade de Pessoas</span>
-						<input type="text" name="qtd_pessoas" size="10" tal:attributes="value python: edit_event['qtd_pessoas'] or None" /><p />
+						<tal:comment replace="nothing">
+							<span>Quantidade de Pessoas</span>
+							<input type="text" name="qtd_pessoas" size="10" tal:attributes="value python: edit_event['qtd_pessoas'] or None" /><p />
+						</tal:comment>
 
 						<tal:rep repeat="item reserve/additional_items|python:[]">
 							<span tal:content="item/label|string: ">TV</span>
