@@ -91,7 +91,7 @@
 						</div>
 						<div tal:condition="item/getText">
 							<label>Opções da reserva:</label><br>
-							<p class="description" tal:content="structure: item/getText|nothing">Text</p>
+							<p class="description" tal:content="structure item/getText|nothing">Text</p>
 						</div>
 					</dd>
 				</dl>				
