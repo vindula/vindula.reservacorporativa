@@ -330,6 +330,7 @@ class ReserveInformationView(grok.View):
                             send_email(self.context, msg, 'Reserva Corporativa: ' + folder.Title() , folder[id].contact_email())
                         if folder.contact:
                             send_email(self.context, msg, 'Reserva Corporativa: ' + folder.Title() , folder.contact)
+                            
                 
                 # TO DO: VERIFICAR NOVAMENTE SE O SLOT ESTA DISPONIVEL
 
@@ -440,8 +441,11 @@ class MyReservationsView(grok.View):
                 folder = event_delete.aq_parent
                 self.context.removeObj(folder,id)
                 
-                msg = createMsgEmailReserve(event_delete, 'excluída')
+                msg = createMsgEmailReserve02(event_delete, 'excluída')
                 send_email(self.context, msg, 'Reserva Corporativa: ' + event_delete.Title() , event_delete.contact_email())
+                if folder.contact:
+                    send_email(self.context, msg, 'Reserva Corporativa: ' + folder.Title() , folder.contact)
+                            
                 
                 self.context.plone_utils.addPortalMessage('Sua reserva foi removida com sucesso.', 'info')
                 self.request.response.redirect(self.context.portal_url()+'/@@my-reservations')
@@ -508,6 +512,20 @@ def createMsgEmailReserve(event, status):
             '%s/my-reservations' % getSite().absolute_url(),
             )
     
+def createMsgEmailReserve02(event, status):
+    return '<p><strong>%s</strong> cancelou a reserva <strong>%s</strong>: </p>' \
+           '<p><label>Data: </label><strong>%s</strong></p>' \
+           '<p><label>Hor&aacute;rio: </label><strong>entre as %s e as %s</strong></p>' \
+           '<p><label>Local: </label><strong>%s</strong></p>' \
+           '<p>Foi %s dia %s</p>' \
+           '<p><a href="%s">Clique aqui</a> para mais detalhes sobre a reserva %s</p><br>' \
+           '<p>Para visualizar suas reservas acesse o <a href="%s">seu perfil</a></p>' % \
+           ((event.getOwner().getProperty('fullname') or event.Creator()), event.aq_parent.Title(), event.start_date.strftime('%d/%m/%Y'),
+            event.start_date.strftime('%H:%M'), event.end_date.strftime('%H:%M'), event.getLocation(), 
+            status, DateTime().strftime('%d/%m/%Y às %H:%M'),event.aq_parent.absolute_url(),event.aq_parent.Title(),
+            '%s/my-reservations' % getSite().absolute_url(),
+            )
+
 def send_email(ctx, msg, assunto, mail_para, arquivos=[], to_email=None):
     #Imports para envio de email
     import smtplib
