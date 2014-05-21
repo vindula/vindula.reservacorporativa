@@ -12,7 +12,7 @@ from zope.app.component.hooks import getSite
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta
+from datetime import timedelta, date
 
 class ReservationRequestView(grok.View):
     grok.context(IContentReserve)
@@ -490,9 +490,83 @@ class ReservationPrintView(grok.View):
             for obj in result:
                 obj = obj.getObject()
                 if obj.aq_parent.Type() == 'Reserva Corporativa':
-                    reservations.append(obj)
+                        reservations.append(obj)
         
         return reservations
+
+
+class ReservationsWeekView(grok.View):
+    grok.context(IContentReserve)
+    grok.require('zope2.AccessContentsInformation')
+    grok.name('reservations-week')
+
+    def getReserves(self):
+        pc = getToolByName(self.context, 'portal_catalog')
+        L = []
+        reserves = pc(portal_type='vindula.reservacorporativa.content.reserve',
+                      path={'query': '/'.join(self.context.getPhysicalPath()), 'depth': 1},
+                      #review_state='published',
+                      review_state = ['published','internal'],
+                      sort_on='sortable_title',
+                      sort_order='ascending',)
+        if reserves:
+            for item in reserves:
+                L.append(item.getObject())
+        return L
+            
+    def next_week(self,today):
+        next_week = today + relativedelta(weeks=+1)
+        year, week, dayBase = next_week.isocalendar()
+        return year, week
+
+    def prev_week(self,today):
+        prev_week = today + relativedelta(weeks=-1)
+        year, week, dayBase = prev_week.isocalendar()
+        return year, week
+
+    def list_weekdays(self,weekday):
+        L= ['Segunda-Feira','Terça-Feira','Quarta-Feira','Quinta-Feira','Sexta-Feira','Sabado','Domingo']
+        return L[weekday]
+
+    def daysOfWeek(self, year, week):
+        L = []
+        if not isinstance(year,int):
+            year=int(year)
+        if not isinstance(week,int):
+            week=int(week)
+
+        day = date(year, 2, 1)
+        year, weekBase, dayBase = day.isocalendar()
+        day += timedelta(1 - dayBase + (week - weekBase)*7)
+        today = day
+        delta = timedelta(1)
+        for i in range(7):
+            L.append(day)
+            day += delta
+        return L,today
+
+    def year_now(self):
+        hoje = date.today()
+        return hoje.year
+
+    def week_now(self):
+        hoje = date.today()
+        return hoje.isocalendar()[1]
+
+    def get_events_day(self,reserva,day):
+        pc = getToolByName(self.context, 'portal_catalog')
+        query={}
+        query['path'] = {'query': '/'.join(reserva.getPhysicalPath()), 'depth': 99}
+        day_max = day + timedelta(1)
+        date_range_query = { 'query':(day,day_max), 'range': 'min:max'}
+        query['portal_type'] = ('Event','EventReserve')
+        query['review_state'] = 'published'
+        query['start'] = date_range_query
+        query['sort_on'] = 'start'
+        result = pc(**query)
+
+        return result
+
 
 def createMsgEmailReserve(event, status):
     return '<p><strong>%s</strong> reservou horário na <strong>%s</strong>: </p>' \

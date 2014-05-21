@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xml:lang="en" 
+	  xmlns:tal="http://xml.zope.org/namespaces/tal" 
+	  xmlns:metal="http://xml.zope.org/namespaces/metal" 
+	  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
+	  metal:use-macro="here/main_template/macros/master" 
+	  i18n:domain="vindula.reservacorporativa">
+	  	
+    <head> 
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+     	<metal:css fill-slot="style_slot">
+           
+        </metal:css>
+	</head>
+	<body> 
+		<metal:main fill-slot="content-core">
+			<div class="reserve-view" tal:define="member python:context.portal_membership.getAuthenticatedMember();
+					  							  altenticado python:str(member)!='Anonymous User';
+					  							  reversas view/getReserves;
+					  							  year request/year|view/year_now;
+					  							  week request/week|view/week_now;
+					  							  t_semana python:view.daysOfWeek(year,week);">
+				
+				<div class="row" style="padding-top: 10px;">
+					<div class="columns large-12">
+
+						<tal:def define="t_next python:view.next_week(t_semana[1]);
+							             t_prev python:view.prev_week(t_semana[1]);
+							             prev_year python:t_prev[0];
+										 prev_week python:t_prev[1];
+										 next_year python:t_next[0];
+										 next_week python:t_next[1]">
+
+							<a class="button tiny small" name="prev_reservations"
+							   href="" tal:attributes="href string:${context/absolute_url}/reservations-week?year=${prev_year}&week=${prev_week}">Semana Anterior</a>
+							<a class="button tiny small" name="next_reservations"
+							   href="" tal:attributes="href string:${context/absolute_url}/reservations-week?year=${next_year}&week=${next_week}">Próxima Semana</a>
+
+
+						</tal:def>
+						<table width="100%" class="listing" id="listing-table">
+							<thead>
+								<tr>
+									<th></th>
+									<tal:rep repeat="dia python:t_semana[0]">
+										<th aling="center">
+											<tal:cont content="python: view.list_weekdays(dia.weekday()) + ' - ' + dia.strftime('%d/%m/%Y')">Monday - 19/05/2014</tal:cont>	
+										</th>	
+									</tal:rep>
+									
+								</tr>
+							</thead>
+							<tbody>
+							<tal:rep repeat="reserva reversas">
+								<tr>
+									<td aling="center">
+										<tal:cont content="reserva/Title"></tal:cont>
+									</td>
+								
+									<tal:rep repeat="dia python:t_semana[0]">
+										<td tal:define="items python:view.get_events_day(reserva,dia);">
+											<tal:rep repeat="item items">
+												<div>
+													<tal:def define="obj item/getObject">
+														<a alt="Editar" title="Editar" id="edit-reserve" target="_blank"
+							           					   tal:attributes="href string:${obj/aq_parent/aq_parent/absolute_url|nothig}/reservation-request?id_ev=${obj/id}" 
+														   tal:content="obj/title|obj/id|nothing">EDIT</a>	
+														<label>Horário: </label><span tal:content="python:'entre as %s e as %s' % (obj.start_date.strftime('%H:%M'), obj.end_date.strftime('%H:%M'))"></span>
+									
+														<p tal:condition="obj/description|nothing" class="description"
+														   tal:content="obj/Description|nothing">Description</p>
+													</tal:def>
+													<hr />
+												</div>
+											</tal:rep>
+										</td>	
+									</tal:rep>
+								</tr>
+
+							</tal:rep>
+							</tbody>
+
+
+						</table>
+						
+
+
+				
+							
+					</div>
+				</div>
+			</div>
+		</metal:main>
+	</body>
+</html>
