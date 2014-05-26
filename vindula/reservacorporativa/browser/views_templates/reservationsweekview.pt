@@ -39,6 +39,9 @@
 							<a class="button tiny small" name="next_reservations"
 							   href="" tal:attributes="href string:${context/absolute_url}/reservations-week?year=${next_year}&week=${next_week}">Próxima Semana</a>
 
+							<a class="button tiny small" name="new_reservations"
+							   href="" tal:attributes="href string:${context/absolute_url|nothing}/reservation-request">Nova Reserva</a>							   
+
 						</tal:def>
 						<table width="100%" class="listing" id="listing-table">
 							<thead>
