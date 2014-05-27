@@ -69,7 +69,7 @@
 													<tal:def define="obj item/getObject">
 														<a alt="Editar" title="Editar" id="edit-reserve" target="_blank" class="profile-link"
 														   tal:define="prefs_user obj/getOwner;"	
-							           					   tal:attributes="href string:${obj/aq_parent/aq_parent/absolute_url|nothig}/reservation-request?id_ev=${obj/id};
+							           					   tal:attributes="href string:${obj/absolute_url|nothing};
 							           					  	 			   data-type string:UserObject;
                            												   data-value prefs_user/getUserName;" 
 														   tal:content="obj/title|obj/id|nothing">EDIT</a>	

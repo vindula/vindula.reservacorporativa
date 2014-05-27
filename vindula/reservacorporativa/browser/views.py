@@ -26,8 +26,7 @@ class ReservationRequestView(grok.View):
                       path={'query': '/'.join(self.context.getPhysicalPath()), 'depth': 1},
                       #review_state='published',
                       review_state = ['published','internal'],
-                      sort_on='sortable_title',
-                      sort_order='ascending',)
+                      sort_on='getObjPositionInParent',)
         if reserves:
             L = []
             for item in reserves:
