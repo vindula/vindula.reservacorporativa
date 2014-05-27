@@ -35,7 +35,7 @@ event_reserve_schema = ATEvent.schema.copy() + Schema((
             i18n_domain='vindula_themedefault',
             format='select',
         ),
-        vocabulary=[("unico",_(u"Evento sem repedição")),
+        vocabulary=[("unico",_(u"Evento sem repetição")),
                     ("semanal", _(u"Evento Semanal")),
                     ("quinzenal", _(u"Evento Quinzenal")),
                     ("mensal", _(u"Evento Mensal")),
@@ -47,7 +47,7 @@ event_reserve_schema = ATEvent.schema.copy() + Schema((
     DateTimeField(
             name='end_dateRecurrent',
             widget=CalendarWidget(
-                label=_(u"Data Final da repedição"),
+                label=_(u"Data Final da repetição"),
                 description=_(u"Selecione o período en que esse evento sera repetido\
                                 ou deixe em branco para evento sem fim."),
                 show_hm = 0,

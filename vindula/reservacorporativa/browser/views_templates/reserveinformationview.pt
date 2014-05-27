@@ -75,15 +75,15 @@
 						</tal:rep>
 
 						<tal:cond condition="reserve/context/recurrent|python:False">
-							<span>Reserva Recorente</span>
+							<span>Reserva Recorrente</span>
 							<input type="checkbox" name="recurrent" value="True" tal:attributes="checked python: edit_event['recurrent'] and 'checked' or ''" />
-							<label for="recurrent">Marque essa opção para criar uma reserva recorente</label>
+							<label for="recurrent">Marque essa opção para criar uma reserva recorrente</label>
 							<br/>
 
 							<span>Frequência da reserva</span>
 							<select name="frequency" id="frequency" tal:define="frequency edit_event/frequency|string:unico">
 								
-								<option value="unico" tal:attributes="selected python: frequency=='unico' and 'selected' or ''">Evento sem repedição</option>
+								<option value="unico" tal:attributes="selected python: frequency=='unico' and 'selected' or ''">Evento sem repetição</option>
 								<option value="semanal" tal:attributes="selected python: frequency=='semanal' and 'selected' or ''">Evento Semanal</option>
 								<option value="quinzenal" tal:attributes="selected python: frequency=='quinzenal' and 'selected' or ''">Evento Quinzenal</option>
 								<option value="mensal" tal:attributes="selected python: frequency=='mensal' and 'selected' or ''">Evento Mensal</option>
