@@ -72,7 +72,7 @@
 							           					   tal:attributes="href string:${obj/absolute_url|nothing};
 							           					  	 			   data-type string:UserObject;
                            												   data-value prefs_user/getUserName;" 
-														   tal:content="obj/title|obj/id|nothing">EDIT</a>	
+														   tal:content="prefs_user/getUserName|nothing">EDIT</a>	
 														   
 														<span tal:content="python:'Horário: %s - %s' % (obj.start_date.strftime('%H:%M'), obj.end_date.strftime('%H:%M'))"></span>
 									
