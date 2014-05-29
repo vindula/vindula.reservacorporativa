@@ -494,7 +494,7 @@ class ReservationPrintView(grok.View):
         return reservations
 
 
-class ReservationsWeekView(grok.View):
+class ReservationsWeekView(grok.View, UtilMyvindula):
     grok.context(IContentReserve)
     grok.require('zope2.AccessContentsInformation')
     grok.name('reservations-week')
