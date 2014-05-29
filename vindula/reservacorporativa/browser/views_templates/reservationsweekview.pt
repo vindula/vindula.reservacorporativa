@@ -77,8 +77,8 @@
 														   
 														<span tal:content="python:'%s - %s' % (obj.start_date.strftime('%H:%M'), obj.end_date.strftime('%H:%M'))"></span>
 									
-														<p tal:condition="obj/description|nothing" class="description"
-														   tal:content="obj/Description|nothing">Description</p>
+														<!--p tal:condition="obj/description|nothing" class="description"
+														   tal:content="obj/Description|nothing">Description</p-->
 													</tal:def>
 													<hr />
 												</div>
