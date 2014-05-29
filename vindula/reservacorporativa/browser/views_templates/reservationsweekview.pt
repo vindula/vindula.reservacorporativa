@@ -75,7 +75,7 @@
                            												   data-value plone_user/getUserName;" 
 														   tal:content="prefs_user/name|nothing">EDIT</a><br />	
 														   
-														<span tal:content="python:'Horário: %s - %s' % (obj.start_date.strftime('%H:%M'), obj.end_date.strftime('%H:%M'))"></span>
+														<span tal:content="python:'%s - %s' % (obj.start_date.strftime('%H:%M'), obj.end_date.strftime('%H:%M'))"></span>
 									
 														<p tal:condition="obj/description|nothing" class="description"
 														   tal:content="obj/Description|nothing">Description</p>
