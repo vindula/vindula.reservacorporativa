@@ -9,7 +9,8 @@ from vindula.reservacorporativa import MessageFactory as _
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent, IObjectCreatedEvent
 
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
-
+from plone.formwidget.contenttree import ObjPathSourceBinder
+from z3c.relationfield.schema import RelationChoice
 
 
 class ITableRowSchema(form.Schema):
@@ -208,6 +209,24 @@ class IReserve(form.Schema):
         title=_(u"Hora que termina"),
         required=False,
         )
+
+
+    obj_contentcore = RelationChoice(title=_(u"Vincular com um formulario basico"),
+                                     description=_(u"Selecione o objeto de formulario para ser exibido com a reserva"),
+                                     source=ObjPathSourceBinder(review_state='published'),
+                                     required=False,)
+
+
+
+    form.fieldset('Horarios',
+        fields=['monday','mon_start','mon_end','tuesday','tue_start','tue_end','wednesday','wed_start','wed_end',
+                'thursday','thu_start','thu_end','friday','fri_start','fri_end','saturday','sat_start','sat_end','sunday',
+                'sun_start','sun_end']
+    )
+    
+    form.fieldset('Avançado',
+        fields=['additional_items','recurrent','obj_contentcore']
+    )
     
 @grok.subscribe(IReserve, IObjectCreatedEvent)
 def ReplicReserve(obj, event):

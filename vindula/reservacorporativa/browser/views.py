@@ -14,6 +14,16 @@ from vindula.myvindula.tools.utils import UtilMyvindula
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta, date
 
+
+class CustomView(object):
+
+    request = None
+    context = None
+
+    def __init__(self,ctx,req):
+        self.request = req
+        self.context = ctx
+
 class ReservationRequestView(grok.View):
     grok.context(IContentReserve)
     grok.require('zope2.View')
@@ -343,6 +353,28 @@ class ReserveInformationView(grok.View):
                 
                 self.context.plone_utils.addPortalMessage('Sua reserva foi criada com sucesso.', 'info')
                 self.request.response.redirect(self.context.portal_url()+'/my-reservations')
+
+                #processa contentcore
+                if folder.obj_contentcore:
+                    from vindula.contentcore.models.fields import ModelsFormFields
+                    from vindula.contentcore.registration import RegistrationLoadForm
+                    obj = folder.obj_contentcore.to_object
+
+                    models_fields = ModelsFormFields().get_Fields_ByIdForm(obj.forms_id)
+                    
+                    # models_fields = fields.find(ModelsFormFields.name_field.is_in(self.back_list))
+                    self.request.form['id_event'] = '%s-%s' %(username, folder.Title())
+                    self.request.form["form.submited"] = True
+                    
+                    tmp_obj = CustomView(obj,self.request)
+                    RegistrationLoadForm().registration_processes(tmp_obj, models_fields=models_fields, isForm=False)
+
+            
+
+
+
+
+
             else:
                 self.context.plone_utils.addPortalMessage('Ocorreu um erro durante a crição da sua reserva.', 'error')
                 self.request.response.redirect(folder.aq_parent.absolute_url())

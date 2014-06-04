@@ -95,11 +95,30 @@
 							<br/>
 
 						</tal:cond>
+
+						
+						<tal:cond condition="reserve/context/obj_contentcore|python:False">
+							<div tal:define="context python:reserve['context'].obj_contentcore.to_object;
+											not_submited python:True;">
+
+								<metal:block metal:use-macro="context/load-form/macros/page-view"/>
+
+							
+							</div>
+	
+
+						</tal:cond>
+
 						
 						<input type="submit" name="create_event" value="Agendar" disabled="true" />
 						<input type="hidden" name="local" tal:attributes="value python: edit_event['local'] or reserve['local'] or None"/>
 						<input type="hidden" name="obj_path" tal:attributes="value reserve/obj_path"/>
 						<input type="hidden" name="edit_event" tal:condition="edit_event" tal:attributes="value edit_event/id_edit|nothing">
+
+
+
+
+
 				</div>
 			</div>
 		</form>
