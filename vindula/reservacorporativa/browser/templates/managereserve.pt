@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xml:lang="en" 
+	  xmlns:tal="http://xml.zope.org/namespaces/tal" 
+	  xmlns:metal="http://xml.zope.org/namespaces/metal" 
+	  xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
+	  metal:use-macro="here/main_template/macros/master" 
+	  i18n:domain="vindula.reservacorporativa">
+	  	
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:cond tal:condition="not: context/getActiv_portletLeft">
+                <tal:dummy tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);"/>
+            </tal:cond>
+             <tal:cond tal:condition="not: context/getActiv_portletRight">
+                <tal:dummy tal:define="disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+            </tal:cond>
+        </metal:block>
+	</head>
+
+	<body> 
+		<metal:main fill-slot="content-core">
+			<div class="reserve-view" >
+
+				<div class="vd_list_reserve" tal:attributes="data_uid context/UID|nothing;
+				                         					 data_type context/portal_type|nothing;">
+					
+					<span id="" class="new_list_reserve" tal:attributes="id view/get_id_frame">
+						<iframe frameborder="0" scrolling="no" class="new_list_reserve" src="" height="0" width="100%" id="" tal:attributes="id view/get_id_frame;
+						                	  src view/get_url_frame">
+
+						</iframe>
+					</span>
+				</div>
+
+			</div>
+		</metal:main>
+	</body>
+</html>

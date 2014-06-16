@@ -1,22 +1,18 @@
 <?xml version="1.0"?>
-<object name="ContentReserve"
+<object name="VindulaReserve"
         meta_type="Factory-based Type Information with dynamic views"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
    	
 <property name="title">Vindula Reserva Corporativa</property>
  <property name="description">Adiciona um tipo de vindula reserva corporativa.</property>
  <property name="content_icon">/++resource++vindula.reservacorporativa/reserve.png</property>
- <property name="content_meta_type">ContentReserve</property>
+ <property name="content_meta_type">VindulaReserve</property>
  <property name="product">vindula.reservacorporativa</property>
- <property name="factory">addContentReserve</property>
+ <property name="factory">addVindulaReserve</property>
  <property name="immediate_view">view</property>
- <property name="global_allow">False</property>
+ <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types">
-   <element value="Event"/>
-   <element value="EventReserve"/>
-   <element value="vindula.reservacorporativa.content.reserve"/>
-   <element value="Topic"/>
  </property>
  <property name="allow_discussion">False</property>
  <property name="default_view">view</property>
@@ -41,11 +37,11 @@
          visible="True">
   <permission value="Modify portal content"/>
  </action>
- <action title="Calendario de Reservas" 
-         action_id="reservations-week"
+ <action title="Gerenciar" 
+         action_id="manage-reserve"
          category="object" 
          condition_expr=""
-         url_expr="string:${object_url}/reservations-week" 
+         url_expr="string:${object_url}/gerenciar" 
          visible="True">
   <permission value="Modify portal content"/>
  </action> 

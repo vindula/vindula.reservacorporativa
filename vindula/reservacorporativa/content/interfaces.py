@@ -9,3 +9,9 @@ class IBlockReserve(Interface):
 
 class IEventReserve(Interface):
     """ Interface for EventReserve content type """
+
+
+class IVindulaReserve(Interface):
+    """ Interface for EventReserve content type """
+
+
