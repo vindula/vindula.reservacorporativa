@@ -18,7 +18,7 @@
 	</head>
 
 	<body> 
-		<metal:main fill-slot="content-core">
+		<metal:main fill-slot="main">
 			<div class="reserve-view" >
 				
 				<div class="vd_week_reserves" tal:attributes="data_uid context/UID|nothing;
