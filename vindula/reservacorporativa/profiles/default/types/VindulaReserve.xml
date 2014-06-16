@@ -45,7 +45,7 @@
          visible="True">
   <permission value="Modify portal content"/>
  </action> 
-<action title="Calendario de Reservas" 
+<action title="Calendário de Reservas" 
          action_id="reservations-week"
          category="object" 
          condition_expr=""
