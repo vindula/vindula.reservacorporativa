@@ -17,7 +17,10 @@ class ViewReserve(grok.View):
     def update(self):
         context = self.context
         self.portal_type = context.portal_type
-        self.UID = context.UID()
+        try:
+            self.UID = context.UID()
+        except AttributeError:
+            self.UID = 'XXXXXX'
 
     def get_id_frame(self):
         return md5(self.portal_type + self.UID).hexdigest()
