@@ -27,7 +27,7 @@ VindulaReserve_schema = ATContentTypeSchema + Schema((
 
     BooleanField(
         name='activ_portletRight',
-        default=True,
+        default=False,
         widget=BooleanWidget(
             label=_(u'Portlet Direita'),
             description=_(u'Se selecionado, ativa a visualização dos portet na coluna da direita.'),
