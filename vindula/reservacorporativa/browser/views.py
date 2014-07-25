@@ -12,7 +12,7 @@ from zope.app.component.hooks import getSite
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta
+from datetime import timedelta, date, datetime as datetime_d
 
 class ReservationRequestView(grok.View):
     grok.context(IContentReserve)
@@ -428,6 +428,13 @@ class MyReservationsView(grok.View):
     
     
     def checkReservations(self):
+
+        def gera_dic_reserve(obj,start_date=None,end_date=None,is_recursivo=False):
+            return {'obj':obj,
+                    'is_recursivo':is_recursivo,
+                    'start_date':start_date or obj.start_date,
+                    'end_date':end_date or obj.end_date}
+
         pc = getToolByName(getSite(), 'portal_catalog')
         ms = self.context.portal_membership
         user_login = ms.getAuthenticatedMember().getUserName()
@@ -445,7 +452,6 @@ class MyReservationsView(grok.View):
                 send_email(self.context, msg, 'Reserva Corporativa: ' + event_delete.Title() , event_delete.contact_email())
                 if folder.contact:
                     send_email(self.context, msg, 'Reserva Corporativa: ' + folder.Title() , folder.contact)
-                            
                 
                 self.context.plone_utils.addPortalMessage('Sua reserva foi removida com sucesso.', 'info')
                 self.request.response.redirect(self.context.portal_url()+'/@@my-reservations')
@@ -467,8 +473,53 @@ class MyReservationsView(grok.View):
             for obj in result:
                 obj = obj.getObject()
                 if obj.aq_parent.Type() == 'Reserva Corporativa':
-                    reservations.append(obj)
-        
+                    reservations.append(gera_dic_reserve(obj))
+
+        #Booked Events Recorentes
+        query['getRecurrent'] = True
+        events_recorents_slots = pc(**query)
+
+        dt_start = datetime.date.today()
+        for obj in events_recorents_slots:
+            obj = obj.getObject()
+
+            frequencia = obj.getFrequency()
+            data_reserva = obj.start_date.date()
+            try:
+                end_time_reserva = obj.end_date.time()
+            except:
+                end_time_reserva = obj.end_date.asdatetime().time()
+
+            stop_recurrent = obj.end_dateRecurrent
+            if stop_recurrent:
+                stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
+                stop_recurrent = stop_recurrent.date()
+
+            def append_Recursive(reservations,obj, data_reserva,stop_recurrent):
+                end_data_reserva = datetime_d.combine(data_reserva, end_time_reserva)
+                
+                # if not stop_recurrent:
+                #     reservations.append(gera_dic_reserve(obj,data_reserva,end_data_reserva,True))
+
+                # elif data_reserva < stop_recurrent:
+                reservations.append(gera_dic_reserve(obj,data_reserva,end_data_reserva,True))
+                    
+                return reservations
+
+            if frequencia == 'semanal':
+                while data_reserva > dt_start and data_reserva < stop_recurrent:
+                    data_reserva = data_reserva + timedelta(days=7)
+                    reservations = append_Recursive(reservations,obj,data_reserva,stop_recurrent)
+                        
+            elif frequencia == 'quinzenal': 
+                while data_reserva > dt_start and data_reserva < stop_recurrent:
+                    data_reserva = data_reserva + timedelta(days=14)
+                    reservations = append_Recursive(reservations,obj,data_reserva,stop_recurrent)
+
+            elif frequencia == 'mensal':
+                while data_reserva > dt_start and data_reserva < stop_recurrent:
+                    data_reserva = data_reserva + relativedelta(months=+1)
+                    reservations = append_Recursive(reservations,obj,data_reserva,stop_recurrent)             
 
         return reservations
     

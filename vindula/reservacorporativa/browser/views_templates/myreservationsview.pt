@@ -45,36 +45,38 @@
 				
 				<tal:cond tal:condition="reservations">
 			        <tal:rep repeat="item batch">
-						<dl class="blockEvent" tal:define="item_type item/Type;
+						<dl class="blockEvent" tal:define="item_obj python:item.get('obj');
+														   item_type item_obj/Type;
 														   item_type_class python:'contenttype-' + normalizeString(item_type);
-														   item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
+														   item_wf_state item_obj/review_state|python: context.portal_workflow.getInfoFor(item_obj, 'review_state', '');
 							                       		   item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
 			                <dt>
-			                    <span class="summary" tal:define="item_icon python:plone_view.getIcon(item);">
-									<img tal:replace="structure item_icon/html_tag" />
+			                    <span class="summary" tal:define="item_icon python:plone_view.getIcon(item_obj);">
+									<img tal:attributes="src item_obj/getIconURL" />
 			                        <a href="#" class="contenttype-folder state-published url"
-			                           tal:attributes="href item/absolute_url|nothing;
+			                           tal:attributes="href item_obj/absolute_url|nothing;
 									   				   class string:$item_type_class $item_wf_state_class url"
-			                           tal:content="item/title|item/id|nothing">Item Title</a>
+			                           tal:content="item_obj/title|item_obj/id|nothing">Item Title</a>
 			                    </span>
 								
-								<input type="hidden" id="id_event" tal:attributes="value item/id"/>
+								<input type="hidden" id="id_event" tal:attributes="value item_obj/id"/>
 								<input type="hidden" id="ab_url" tal:attributes="value context/absolute_url"/>
 								
 								<a alt="Editar" title="Editar" class="edit-reserve" id="edit-reserve"
-						           tal:attributes="href string:${item/aq_parent/aq_parent/absolute_url|nothig}/reservation-request?id_ev=${item/id}" >
+						           tal:attributes="href string:${item/aq_parent/aq_parent/absolute_url|nothing}/reservation-request?id_ev=${item_obj/id}" >
 						        	<img tal:attributes="src string: ${context/portal_url|nothing}/++resource++vindula.reservacorporativa/event_edit_icon.png" />
 								</a>
-								<span alt="Excluir" title="Excluir" class="delete-reserve" id="delete-reserve" class="cursorPointer">
+								<span alt="Excluir" title="Excluir" class="delete-reserve" id="delete-reserve" class="cursorPointer"
+									  tal:condition="not:item/is_recursivo|python:False">
 									<img tal:attributes="src string: ${context/portal_url|nothing}/++resource++vindula.reservacorporativa/event_remove_icon.png" />
 								</span>
 			                </dt>
 							
 							<dd>
-								<label>Data: </label><span tal:content="python:item.start_date.strftime('%d/%m/%Y')"></span><br>
-								<label>Horário: </label><span tal:content="python:'entre as %s e as %s' % (item.start_date.strftime('%H:%M'), item.end_date.strftime('%H:%M'))"></span>
+								<label>Data: </label><span tal:content="python:item.get('start_date').strftime('%d/%m/%Y')"></span><br>
+								<label>Horário: </label><span tal:content="python:'entre as %s e as %s' % (item.get('start_date').strftime('%H:%M'), item.get('end_date').strftime('%H:%M'))"></span>
 								
-								<p tal:condition="item/description|nothing" class="description" tal:content="item/Description|nothing">Description</p>
+								<p tal:condition="item_obj/description|nothing" class="description" tal:content="item_obj/Description|nothing">Description</p>
 							</dd>
 						</dl>				
 					</tal:rep>
