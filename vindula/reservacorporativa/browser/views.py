@@ -432,7 +432,7 @@ class MyReservationsView(grok.View):
         def gera_dic_reserve(obj,start_date=None,end_date=None,is_recursivo=False):
             return {'obj':obj,
                     'is_recursivo':is_recursivo,
-                    'start_date':start_date or obj.start_date,
+                    'start_date': obj.start_date,
                     'end_date':end_date or obj.end_date}
 
         pc = getToolByName(getSite(), 'portal_catalog')
