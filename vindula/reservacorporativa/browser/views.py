@@ -432,7 +432,7 @@ class MyReservationsView(grok.View):
         def gera_dic_reserve(obj,start_date=None,end_date=None,is_recursivo=False):
             return {'obj':obj,
                     'is_recursivo':is_recursivo,
-                    'start_date': obj.start_date,
+                    'start_date': start_date or obj.start_date,
                     'end_date':end_date or obj.end_date}
 
         pc = getToolByName(getSite(), 'portal_catalog')
@@ -485,6 +485,12 @@ class MyReservationsView(grok.View):
 
             frequencia = obj.getFrequency()
             data_reserva = obj.start_date.date()
+
+            try:
+                start_time_reserva = obj.start_date.time()
+            except:
+                start_time_reserva = obj.start_date.asdatetime().time()
+
             try:
                 end_time_reserva = obj.end_date.time()
             except:
@@ -497,12 +503,13 @@ class MyReservationsView(grok.View):
 
             def append_Recursive(reservations,obj, data_reserva,stop_recurrent):
                 end_data_reserva = datetime_d.combine(data_reserva, end_time_reserva)
+                start_data_reserva = datetime_d.combine(data_reserva, start_time_reserva)
                 
                 # if not stop_recurrent:
                 #     reservations.append(gera_dic_reserve(obj,data_reserva,end_data_reserva,True))
 
                 # elif data_reserva < stop_recurrent:
-                reservations.append(gera_dic_reserve(obj,data_reserva,end_data_reserva,True))
+                reservations.append(gera_dic_reserve(obj,start_data_reserva,end_data_reserva,True))
                     
                 return reservations
 

@@ -63,7 +63,7 @@
 								<input type="hidden" id="ab_url" tal:attributes="value context/absolute_url"/>
 								
 								<a alt="Editar" title="Editar" class="edit-reserve" id="edit-reserve"
-						           tal:attributes="href string:${item/aq_parent/aq_parent/absolute_url|nothing}/reservation-request?id_ev=${item_obj/id}" >
+						           tal:attributes="href string:${item_obj/aq_parent/aq_parent/absolute_url|nothing}/reservation-request?id_ev=${item_obj/id}" >
 						        	<img tal:attributes="src string: ${context/portal_url|nothing}/++resource++vindula.reservacorporativa/event_edit_icon.png" />
 								</a>
 								<span alt="Excluir" title="Excluir" class="delete-reserve" id="delete-reserve" class="cursorPointer"
