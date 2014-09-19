@@ -461,11 +461,13 @@ class MyReservationsView(grok.View):
             date_range_query = { 'query': DateTime(), 'range': 'max'}
         else:
             date_range_query = { 'query': DateTime(), 'range': 'min'}
+        
         query['Creator'] = user_login
         query['portal_type'] = ('Event','EventReserve')
         query['review_state'] = 'published'
         query['start'] = date_range_query
         query['sort_on'] = 'start'
+        
         result = pc(**query)
         
         reservations = []
@@ -477,15 +479,17 @@ class MyReservationsView(grok.View):
 
         #Booked Events Recorentes
         query['getRecurrent'] = True
+        if query.get('start'):
+            query.pop('start')
         events_recorents_slots = pc(**query)
-
-        dt_start = datetime.date.today()
+        
         for obj in events_recorents_slots:
             obj = obj.getObject()
 
             frequencia = obj.getFrequency()
             data_reserva = obj.start_date.date()
-
+            today = datetime.date.today()
+            
             try:
                 start_time_reserva = obj.start_date.time()
             except:
@@ -500,34 +504,40 @@ class MyReservationsView(grok.View):
             if stop_recurrent:
                 stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
                 stop_recurrent = stop_recurrent.date()
-
-            def append_Recursive(reservations,obj, data_reserva,stop_recurrent):
+            else:
+                stop_recurrent = today + datetime.timedelta(days=60)
+            
+            is_prev = False
+            if form.get('prev_reservations'):
+                is_prev = True
+                stop_recurrent = today - datetime.timedelta(days=1)
+            
+            def append_Recursive(reservations,obj, data_reserva):
                 end_data_reserva = datetime_d.combine(data_reserva, end_time_reserva)
                 start_data_reserva = datetime_d.combine(data_reserva, start_time_reserva)
                 
-                # if not stop_recurrent:
-                #     reservations.append(gera_dic_reserve(obj,data_reserva,end_data_reserva,True))
-
-                # elif data_reserva < stop_recurrent:
                 reservations.append(gera_dic_reserve(obj,start_data_reserva,end_data_reserva,True))
-                    
                 return reservations
-
-            if frequencia == 'semanal':
-                while data_reserva > dt_start and data_reserva < stop_recurrent:
-                    data_reserva = data_reserva + timedelta(days=7)
-                    reservations = append_Recursive(reservations,obj,data_reserva,stop_recurrent)
-                        
-            elif frequencia == 'quinzenal': 
-                while data_reserva > dt_start and data_reserva < stop_recurrent:
-                    data_reserva = data_reserva + timedelta(days=14)
-                    reservations = append_Recursive(reservations,obj,data_reserva,stop_recurrent)
-
-            elif frequencia == 'mensal':
-                while data_reserva > dt_start and data_reserva < stop_recurrent:
-                    data_reserva = data_reserva + relativedelta(months=+1)
-                    reservations = append_Recursive(reservations,obj,data_reserva,stop_recurrent)             
-
+            
+            while data_reserva <= stop_recurrent:
+                if frequencia == 'semanal':
+                    freq = timedelta(days=7)
+                elif frequencia == 'quinzenal':
+                    freq = timedelta(days=14)
+                else:
+                    freq = relativedelta(months=+1)
+                    
+                data_reserva = data_reserva  + freq
+                
+                if data_reserva > stop_recurrent:
+                    break
+                
+                if not is_prev and data_reserva >= today:
+                    reservations = append_Recursive(reservations, obj, data_reserva)
+                
+                if is_prev and data_reserva <= today:
+                    reservations = append_Recursive(reservations, obj, data_reserva)
+                
         return reservations
     
 class ReservationPrintView(grok.View):
